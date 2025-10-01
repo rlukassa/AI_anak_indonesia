@@ -30,5 +30,10 @@ querySQL={
     #lihat semua tabel yang ada di database
     "lihatSemuaTabel_SQL" : "SELECT name FROM sqlite_master WHERE type='table';",
     #lihat isi tabel berdasarkan nama tabel
-    "lihatIsiTabel_SQL" : "SELECT * FROM {tabel};"
+    "lihatIsiTabel_SQL" : "SELECT * FROM {tabel};",
+    # cek apakah tabel ada
+    "cekTabelAda_SQL" : "SELECT name FROM sqlite_master WHERE type='table' AND name=?;",
+    # pragma untuk database synchronization
+    "pragmaSyncFull_SQL" : "PRAGMA synchronous = FULL;",
+    "pragmaJournalDelete_SQL" : "PRAGMA journal_mode = DELETE;"
 }

@@ -40,16 +40,19 @@ class SQLOutput:
         # Auto-refresh setelah insert data
         self.autoRefresh()
     
-    def getAllTables(self):
+    def getAllTables(self): # ini buat nampilin semua tabel yang ada di database
         self.autoRefresh()  # Refresh untuk mendapatkan data terbaru
         self.cursor.execute(Query.querySQL["lihatSemuaTabel_SQL"])
-        tables = self.cursor.fetchall()
-        if tables: # ini debug doang, tabel nya apa aja
-            for table in tables:
+        Tables = self.cursor.fetchall()
+        # Filter tabel internal SQLite (sqlite_sequence, sqlite_master, dll)
+        allTables = [table for table in Tables if not table[0].startswith('sqlite_')]
+        if allTables:
+            print(f"Ditemukan {len(allTables)} tabel user:")
+            for table in allTables:
                 print(f"- {table[0]}")
         else:
-            print("Tidak ada tabel dalam database.")
-        return tables
+            print("Tidak ada tabel user dalam database.")            
+        return allTables
     
     def closeConnection(self):
         self.conn.close()
@@ -60,12 +63,12 @@ class SQLOutput:
             self.conn.close()
         self.conn = sqlite3.connect(self.db_path)
         self.cursor = self.conn.cursor()
-        self.conn.execute("PRAGMA synchronous = FULL;")
-        self.conn.execute("PRAGMA journal_mode = DELETE;")
+        self.conn.execute(Query.querySQL["pragmaSyncFull_SQL"])
+        self.conn.execute(Query.querySQL["pragmaJournalDelete_SQL"])
 
     def hapusTable(self, tabel: str) -> None:
         # Cek apakah tabel ada sebelum menghapus
-        self.cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?;", (tabel,))
+        self.cursor.execute(Query.querySQL["cekTabelAda_SQL"], (tabel,))
         table = self.cursor.fetchone()
         if table:
             self.cursor.execute(Query.querySQL["hapusTabel_SQL"].format(tabel=tabel))

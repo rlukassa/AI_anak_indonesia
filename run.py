@@ -23,15 +23,16 @@ def ujiCoba() :
 
     #Perihal SQL - karena sempet perlu refresh kalo udah dihapus
     # Buat tabel dengan nama 'jadwal_kuliah'
-    nama_tabel = "jadwal_kuliah"
-    db.buatTable(nama_tabel)
+    tabel = "jadwal_kuliah"
+    db.buatTable(tabel)
     # Tampilkan semua tabel yang ada
     db.getAllTables()
     # butuh insert data (dari json) -- tapi ntaran aj
 
 
-    # db.insertSampleData(nama_tabel)
-    db.hapusTable(nama_tabel)
+    # db.insertSampleData(tabel)
+    db.hapusTable(tabel)
+    print("- - - - -Ini hapus table di run.py")
     
     
     # Lihat semua tabel yang tersisa
