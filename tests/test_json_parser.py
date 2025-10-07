@@ -7,7 +7,7 @@ def main():
     print("Top-level keys in JSON:")
     print(list(parser.data.keys()))
     
-    for section_key in ["kelas_mata_kuliah", "ruangan", "mahasiswa"]:
+    for section_key in ["kelas_mata_kuliah", "ruangan", "mahasiswa", "dosen"]:
         try:
             section = parser.parse_section(section_key)
             print(f"\nSection '{section_key}':")

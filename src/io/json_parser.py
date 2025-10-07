@@ -10,13 +10,3 @@ class JSONParser:
             raise ValueError(f"Key '{key}' missing in JSON")
         section = self.data[key]
         return section
-
-
-'''
-Cara pake: 
-global parser = JSONParser(<absolute_path>)
-
-parser(<KEY>) -> list of key value pairs (nanti construct initialize di class masing2)
-
-CEK DI tests.test_json_parser
-'''
