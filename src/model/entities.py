@@ -1,8 +1,5 @@
 from dataclasses import dataclass
-from datetime import time
 from typing import List, Tuple
-
-Slot = Tuple[str, time]
 
 @dataclass
 class Ruangan:
@@ -12,8 +9,8 @@ class Ruangan:
 
 @dataclass
 class Waktu:
-    waktu_mulai: Slot
-    waktu_akhir: Slot
+    hari: str
+    jam: int
 
 
 @dataclass
@@ -33,4 +30,4 @@ class Mahasiswa:
 class Dosen:
     nama: str
     mata_kuliah_diampu: List[str]
-    waktu_preferensi: List[Slot]
+    waktu_preferensi: List[Waktu]

@@ -1,5 +1,8 @@
 import json
 
+# -----------------------------
+#  JSONParser: Parse data (.json)
+# -----------------------------
 class JSONParser:
     def __init__(self, path):
         with open(path, "r", encoding="utf-8") as f:
