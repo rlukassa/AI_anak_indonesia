@@ -21,6 +21,9 @@ class State:
         self.assignments: Dict[Tuple[str, Waktu], MataKuliah] = {}
         self.times_to_mk: Dict[Waktu, List[MataKuliah]] = {}
 
+        # State Value
+        self.state_value: float = 0
+
 
     def initialize_domain(self, repo: Repository):
         """Inisialisasi Object Domain, termasuk repo"""
@@ -40,6 +43,7 @@ class State:
         new_state.available_slots = self.available_slots
         new_state.assignments = dict(self.assignments)
         new_state.times_to_mk = {k: list(v) for k, v in self.times_to_mk.items()}
+        new_state.state_value = self.state_value
         return new_state
 
 
@@ -140,10 +144,13 @@ class State:
         # 4. Swap kedua slot
         successor.swap_mk(slot1, slot2)
 
+        # 5. Hitung state_value
+        successor.state_value = successor.count_state_value(*objectives)
+
         return successor
     
 
-    def initialize_random_state(self):
+    def initialize_random_state(self, *objectives: Callable):
         """Inisialisasi sebuah state secara random"""
         # Hapus segala yang ada
         self.assignments = {}
@@ -162,3 +169,6 @@ class State:
                 slot = available_slots.pop()
                 kode_ruangan, waktu = slot
                 self.assign_mk(kode_mk, kode_ruangan, waktu)
+        
+        # Hitung state_value
+        self.state_value = self.count_state_value(*objectives)
