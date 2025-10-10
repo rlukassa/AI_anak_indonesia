@@ -140,9 +140,6 @@ class State:
         successor.state_value = successor.count_state_value(*objectives)
         return successor
 
-
-    
-
     def initialize_random_state(self, *objectives: Callable):
         """Inisialisasi sebuah state secara random"""
         # Hapus segala yang ada
