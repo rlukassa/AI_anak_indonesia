@@ -2,7 +2,6 @@ from dataclasses import dataclass
 from typing import Any
 from .local_search import LocalSearch
 from src.model.state import State
-import sys
 import random
 
 @dataclass
@@ -14,7 +13,7 @@ class HillClimbing(LocalSearch):
         if self.variant == "steepest":
             return self._steepest(state, *objectives)
         if self.variant == "sideways":
-            ms = sys.maxsize if max_sideways is None else max_sideways
+            ms = 10 if max_sideways is None else max_sideways
             return self._sideways(state, ms, *objectives)
         if self.variant == "stochastic":
             iters = 10 if iterations is None else iterations
