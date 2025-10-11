@@ -45,6 +45,7 @@ def kasus_kapasitas_kurang(state:State) -> int:
         kapasitas_ruangan = state.repo.ruangan[slot[0]].kuota_ruangan
         sks_matakuliah = matkul.jumlah_sks
         beban_state += max(0, (jumlah_mahasiswa - kapasitas_ruangan)*sks_matakuliah)
+        # beban_state += max(0, (jumlah_mahasiswa - kapasitas_ruangan))
     
     return beban_state
 
