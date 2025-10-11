@@ -46,6 +46,7 @@ class GeneticAlgorithm:
             selected_parent.append(parent_state)
         
         min_state_value = min([s.state_value for s in selected_parent])
+        best_state = [s for s in selected_parent if s.state_value == max([s.state_value for s in selected_parent])][0]
         for i in range(jml_iterasi):
 
             # 2. Menhghitung fitness function
@@ -62,22 +63,37 @@ class GeneticAlgorithm:
                 p1 = selected_parent[i]
                 p2 = selected_parent[i+1]
                 
-                self.crossover_mutation(p1, p2)
+                c1, c2 = self.crossover_mutation(p1, p2, *objectives)
+
+                # Konsep Elitisme
+                urutan_state = sorted([p1, p2, c1, c2], key=lambda x: x.state_value, reverse=True)
+                good_state1 = urutan_state[0]
+                good_state2 = urutan_state[1]
 
                 # Cek Ketercapaian Solusi
-                if p1.state_value == 0: return p1
-                if p2.state_value == 0: return p2
+                if good_state1.state_value == 0: return good_state1
+                if good_state2.state_value == 0: return good_state2
+                if good_state1.state_value > best_state.state_value: best_state = good_state1
+                if good_state2.state_value > best_state.state_value: best_state = good_state2
+
+                selected_parent[i]  = good_state1
+                selected_parent[i+1]= good_state2
 
             # 5. Evaluasi min_state_value
             min_state_value = min(min_state_value, min([s.state_value for s in selected_parent]))
+        
+        return best_state
 
-    def crossover_mutation(self, stateA:State, stateB:State, *objectives:Callable):
+    def crossover_mutation(self, stateA:State, stateB:State, *objectives:Callable) -> Tuple[State, State]:
         """Melakukan crossover dan mutation. Mengapa disatukan? 
         karena mutationnya sangat bergantung dengan hasil crossover"""
         
+        state_A = stateA.copy()
+        state_B = stateB.copy()
+
         # 1. Extract (matkul -> slots)
-        matkul_slots_A = stateA.mk_to_slots
-        matkul_slots_B = stateB.mk_to_slots
+        matkul_slots_A = state_A.mk_to_slots
+        matkul_slots_B = state_B.mk_to_slots
 
         # 2. Get crossover-able matkul_slot
         crossable_A: Dict[str, List[Tuple[str, Waktu]]] = {}
@@ -94,44 +110,46 @@ class GeneticAlgorithm:
         for (kode_matkul_A, list_slot_A), (kode_matkul_B, list_slot_B) in zip(crossable_A.items(), crossable_B.items()):
             for slot_A, slot_B in zip(list_slot_A, list_slot_B):
                 # Conflict on A
-                if slot_B in stateA.assignments:
+                if slot_B in state_A.assignments:
                     # Mana yang harus mengalah
-                    mutable_matkul = GeneticAlgorithm.select_mutable_matkul(stateA, slot_B, kode_matkul_A)
+                    mutable_matkul = GeneticAlgorithm.select_mutable_matkul(state_A, slot_B, kode_matkul_A, *objectives)
                     mutable_A.append(mutable_matkul)
                     if mutable_matkul != kode_matkul_A:
-                        stateA.remove_mk(slot_A[0], slot_A[1]) # awal
-                        stateA.remove_mk(slot_B[0], slot_B[1]) # tujuan
-                        stateA.assign_mk(kode_matkul_A, slot_B[0], slot_B[1])
+                        state_A.remove_mk(slot_A[0], slot_A[1]) # awal
+                        state_A.remove_mk(slot_B[0], slot_B[1]) # tujuan
+                        state_A.assign_mk(kode_matkul_A, slot_B[0], slot_B[1])
                 # No Conflict on A
                 else:
-                    stateA.swap_mk(slot_A, slot_B)
+                    state_A.swap_mk(slot_A, slot_B)
 
                 # Conflict on B
-                if slot_A in stateB.assignments:
+                if slot_A in state_B.assignments:
                     # Mana yang harus mengalah
-                    mutable_matkul = GeneticAlgorithm.select_mutable_matkul(stateB, slot_A, kode_matkul_B)
+                    mutable_matkul = GeneticAlgorithm.select_mutable_matkul(state_B, slot_A, kode_matkul_B, *objectives)
                     mutable_B.append(mutable_matkul)
                     if mutable_matkul != kode_matkul_B:
-                        stateB.remove_mk(slot_B[0], slot_B[1]) # awal
-                        stateB.remove_mk(slot_A[0], slot_A[1]) # tujuan
-                        stateB.assign_mk(kode_matkul_B, slot_A[0], slot_A[1])
+                        state_B.remove_mk(slot_B[0], slot_B[1]) # awal
+                        state_B.remove_mk(slot_A[0], slot_A[1]) # tujuan
+                        state_B.assign_mk(kode_matkul_B, slot_A[0], slot_A[1])
                 # No Conflict on B
                 else:
-                    stateB.swap_mk(slot_A, slot_B)
+                    state_B.swap_mk(slot_A, slot_B)
 
         # 4. Mutation
         for kode_matkul_A in mutable_A:
-            possible_slots = [slot for slot in stateA.available_slots if slot not in stateA.assignments]
+            possible_slots = [slot for slot in state_A.available_slots if slot not in state_A.assignments]
             new_slot = random.choice(possible_slots)
-            stateA.assign_mk(kode_matkul_A, new_slot[0], new_slot[1])
+            state_A.assign_mk(kode_matkul_A, new_slot[0], new_slot[1])
         for kode_matkul_B in mutable_B:
-            possible_slots = [slot for slot in stateB.available_slots if slot not in stateB.assignments]
+            possible_slots = [slot for slot in state_B.available_slots if slot not in state_B.assignments]
             new_slot = random.choice(possible_slots)
-            stateB.assign_mk(kode_matkul_B, new_slot[0], new_slot[1])
+            state_B.assign_mk(kode_matkul_B, new_slot[0], new_slot[1])
 
         # 5. Update state_value
-        stateA.state_value = stateA.count_state_value(*objectives)
-        stateB.state_value = stateB.count_state_value(*objectives)
+        state_A.state_value = state_A.count_state_value(*objectives)
+        state_B.state_value = state_B.count_state_value(*objectives)
+
+        return state_A, state_B
     
 
     def select_mutable_matkul(state:State, slot:Tuple[str, Waktu], new_matkul:str, *objectives:Callable) -> str:

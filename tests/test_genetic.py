@@ -132,13 +132,29 @@ class TestGeneticAlgorithmWithJSON(unittest.TestCase):
         # Inisialisasi state awal
         initial_state = State()
         initial_state.initialize_domain(self.repo)
+        initial_state.initialize_random_state(*self.objectives)
+
+        print("======================================================================")
+        print("Initial State")
+        print("----------------------------------------------------------------------")
+        # Periksa setiap pelanggaran secara terpisah untuk verifikasi yang lebih rinci
+        mahasiswa_bentrok_val = kasus_mahasiswa_bentrok(initial_state)
+        kapasitas_kurang_val = kasus_kapasitas_kurang(initial_state)
+        dosen_gabisa_val = kasus_dosen_gabisa(initial_state)
+        dosen_bentrok_val = kasus_dosen_bentrok(initial_state)
+        print(f"Beban Mahasiswa Bentrok: {mahasiswa_bentrok_val}")
+        print(f"Beban Kapasitas Kurang: {kapasitas_kurang_val}")
+        print(f"Beban Dosen Tidak Bisa: {dosen_gabisa_val}")
+        print(f"Beban Dosen Bentrok: {dosen_bentrok_val}")
+        print("======================================================================")
+        print()
 
         # Inisialisasi dan jalankan algoritma genetika
         ga = GeneticAlgorithm(initial_state)
         # Menjalankan GA dengan parameter yang disesuaikan
         solution = ga.search(
             10,
-            100000000000000000,
+            1000,
             *self.objectives
         )
 
