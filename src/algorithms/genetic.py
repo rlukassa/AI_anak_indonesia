@@ -19,17 +19,21 @@ class GeneticAlgorithm:
 
     def __init__(self, state:State):
         self.state = state
+        # self.conf_crossover = {
+        #     kode_matkul: [
+        #         True if i == state.repo.mata_kuliah[kode_matkul].jumlah_sks - 1 else False for i in range(
+        #             state.repo.mata_kuliah[kode_matkul].jumlah_sks
+        #         )
+        #     ] for kode_matkul in state.repo.mata_kuliah.keys()
+        # }
         self.conf_crossover = {
             kode_matkul: [
-                True if i == state.repo.mata_kuliah[kode_matkul].jumlah_sks - 1 else False for i in range(
+                True if i % 2 == 0 else False for i in range(
                     state.repo.mata_kuliah[kode_matkul].jumlah_sks
                 )
-            ] for kode_matkul in state.repo.mata_kuliah.keys()
+            ]
+            for kode_matkul, _ in self.state.repo.mata_kuliah.items()
         }
-        # self.conf_crossover = {
-        #     kode_matkul: [True] * matkul.jumlah_sks  # Semua slot bisa di-cross
-        #     for kode_matkul, matkul in self.state.repo.mata_kuliah.items()
-        # }
 
 
     def search(self, jml_parent:int, jml_iterasi:int, *objectives:Callable) -> State:
