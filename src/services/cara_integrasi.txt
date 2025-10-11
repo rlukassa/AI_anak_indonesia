@@ -1,0 +1,17 @@
+
+
+untuk hc ama GA
+yang di comment itu sebagai contoh
+
+ada file Table.py dan Info.py (ini cuek aja) -> karena udah dipanggil di services/ jadi tinggal config di services
+
+nah langsung ke services/ ama main.py untuk fokus integrasinya 
+
+main.py
+1. OutputService.showWelcome()
+2. UserInterfaceService.getValidFilePath()
+3. UserInterfaceService.selectAlgorithm()
+4. AlgorithmConfigService.configure[Algorithm]()
+5. AlgorithmExecutionService.run[Algorithm](state, config)
+6. OutputService.displayResults(hasil, parameters, stats)
+7. OutputConfigService.askSaveOption()

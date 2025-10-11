@@ -1,12 +1,11 @@
 import os
 from settings.settings import validPath, validJSONFormat
 
-class UserInterfaceService:
-    """Service untuk menangani user input - Single Responsibility: User Input Handling"""
-    
+# buat menangani input handling dari user
+
+class UserInterfaceService:    
     @staticmethod
     def getValidFilePath() -> str:
-        """Meminta user input path file JSON yang valid"""
         while True:  # loop sampai input valid
             filePath = str(input("Masukkan path file JSON: "))  # input path dari user
             if validPath(filePath) and validJSONFormat(filePath):  # validasi path dan format
@@ -16,7 +15,6 @@ class UserInterfaceService:
     
     @staticmethod
     def selectAlgorithm() -> str:
-        """Meminta user memilih algoritma yang akan digunakan"""
         while True:  # loop sampai pilihan valid
             print("\nPilih Algoritma:")  # header pilihan
             print("1. Hill Climbing (HC)")  # pilihan 1
@@ -29,3 +27,6 @@ class UserInterfaceService:
                 return selectedAlgorithm  # return pilihan yang valid
             else:
                 print("Pilihan tidak valid! Gunakan HC, SA, atau GA.")  # pesan error
+            # nah return selectedAlgorithm ini bakal ke main.py 
+            # disitu bakal dicek masing masing, kalo HC -> config HC 
+            # lanjut ke (4.) AlgorithmConfigService.py 

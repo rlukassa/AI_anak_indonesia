@@ -13,68 +13,53 @@ from src.eval.evaluator import (  # import objective functions
 )
 
 def main():  # fungsi utama program sebagai driver
-    # tampilkan welcome message
-    OutputService.showWelcome()  # panggil service untuk tampilkan welcome
-    
-    # dapatkan path file yang valid dari user
-    filePath = UserInterfaceService.getValidFilePath()  # service untuk input path valid
-    
-    # buat repository dari file JSON yang valid
-    repository = Repository.create_repo(filePath)  # buat repository dari data JSON
-    
-    # pilih algoritma yang akan digunakan
+    OutputService.showWelcome()  
+    filePath = UserInterfaceService.getValidFilePath()
+    repository = Repository.create_repo(filePath) # yang ubah ke object itu
     selectedAlgorithm = UserInterfaceService.selectAlgorithm()  # service untuk pilih algoritma
-    
-    # inisialisasi state awal
     initialState = State()  # buat state kosong
     initialState.initialize_domain(repository)  # inisialisasi dengan data repository
-    
-    # generate initial random state
     objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang, kasus_dosen_gabisa, kasus_dosen_bentrok)
     initialState.initialize_random_state(*objectiveFunctions)  # buat assignment awal
-    
-    # tampilkan pesan mulai optimasi
-    OutputService.showOptimizationStart()  # pesan mulai optimasi
-    
-    # eksekusi algoritma berdasarkan pilihan user
-    if selectedAlgorithm == "HC":  # jika pilih Hill Climbing
-        # konfigurasi parameter Hill Climbing
+    OutputService.showOptimizationStart()  # pesan mulai 
+
+    # // Buat HC
+    if selectedAlgorithm == "HC":  # pilih Hill Climbing
         config = AlgorithmConfigService.configureHillClimbing()  # service konfigurasi HC
-        
-        # jalankan algoritma Hill Climbing
+
+        # driver algo       
         finalState, algorithmStats = AlgorithmExecutionService.runHillClimbing(initialState, config)  # eksekusi HC
-        
-        # nama algoritma untuk output
-        algorithmName = f"Hill Climbing ({config['variant']})"  # nama dengan variant
-        
+        algorithmName = f"Hill Climbing ({config['variant']})"  # nama dengan variant kek HC Random Restart 
+    
+    # // BUAT SA
     elif selectedAlgorithm == "SA":  # jika pilih Simulated Annealing
-        # konfigurasi parameter Simulated Annealing
         config = AlgorithmConfigService.configureSimulatedAnnealing()  # service konfigurasi SA
-        
-        # jalankan algoritma Simulated Annealing
         finalState, algorithmStats = AlgorithmExecutionService.runSimulatedAnnealing(initialState, config)  # eksekusi SA
-        
-        # nama algoritma untuk output
         algorithmName = "Simulated Annealing"  # nama algoritma
         
+    # // BUAT GA
     elif selectedAlgorithm == "GA":  # jika pilih Genetic Algorithm
-        # konfigurasi parameter Genetic Algorithm
         config = AlgorithmConfigService.configureGeneticAlgorithm()  # service konfigurasi GA
         
-        # jalankan algoritma Genetic Algorithm
         finalState, algorithmStats = AlgorithmExecutionService.runGeneticAlgorithm(initialState, config)  # eksekusi GA
-        
-        # nama algoritma untuk output
         algorithmName = "Genetic Algorithm"  # nama algoritma
+
+    # nah finalState dan algorithmStats itu hasil dari algoritma nya 
+    # terus keluarain display Resultsnya (6.) 7.
+    # tapi ini yang dibawah biarin aja
+    # jadi fokuske 4. dan 5. 
+    # dah itu
+    # harusnya udah keluar tabelnya kalo bener 
+
     
-    # tampilkan header hasil
-    OutputService.showResultHeader()  # tampilkan header hasil
+    # HEADER OUTPUT    
+    OutputService.showResultHeader()  # tampilkan header hasil yang HASIL OPTIMASI
     
     # display semua hasil optimasi
-    OutputService.displayResults(finalState, algorithmName, config, algorithmStats)  # display lengkap
+    OutputService.displayResults(finalState, algorithmName, config, algorithmStats)  # display lengkap dari informasi optimasi sampe tabel dan info
     
-    # tanyakan apakah ingin save ke file
     if OutputConfigService.askSaveOption():  # tanya save option
         filename = OutputConfigService.generateFilename(algorithmName)  # generate nama file
         print(f"Fitur save akan ditambahkan nanti dengan nama: {filename}")  # placeholder
+
 

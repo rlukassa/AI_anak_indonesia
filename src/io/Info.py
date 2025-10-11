@@ -1,26 +1,22 @@
 from typing import Dict, Any, List
 
-class Info:
-    """Simple Info class untuk menampilkan informasi dalam kotak"""
-    
+class Info:    
     def __init__(self):
         self.infos: Dict[str, Any] = {}
         self.sections: List[tuple] = []
     
     def addInfo(self, key: str, value: Any) -> None:
-        """Tambah info key-value"""
-        self.infos[key] = value
+        self.infos[key] = value # tambah info , pake dict
+         # contoh : self.infos["Akurasi"] = 95.5
     
     def addSection(self, title: str, content: str) -> None:
-        """Tambah section dengan title dan content"""
-        self.sections.append((title, content))
+        self.sections.append((title, content)) # tambah section, pake list of tuple
+        # contoh : self.sections.append(("Analisis Jadwal", "Total Mata Kuliah: 50\nTotal Ruangan: 10"))
     
     def display(self) -> None:
-        """Display info ke console"""
         print(self.render())
     
     def render(self) -> str:
-        """Render info sebagai string dengan kotak"""
         if not self.infos and not self.sections:
             return ""
         

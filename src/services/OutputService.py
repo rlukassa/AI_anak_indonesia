@@ -4,18 +4,13 @@ from ..io.Table import Table
 from ..io.Info import Info
 
 class OutputService:
-    """Unified service untuk semua output functionality"""
     
     @staticmethod
     def generateAlgorithmInfo(algorithmName: str, parameters: Dict[str, Any], 
                             executionStats: Dict[str, Any]) -> Info:
-        """Generate info box untuk algoritma"""
         info = Info()
-        
-        # Basic algorithm info
         info.addInfo("Algoritma", algorithmName)
         
-        # Add parameters based on algorithm type
         if algorithmName == "Simulated Annealing":
             info.addInfo("Initial Temperature", f"{parameters.get('initialTemp', 0):.2f}")
             info.addInfo("Cooling Rate", f"{parameters.get('coolingRate', 0):.4f}")
@@ -69,12 +64,11 @@ class OutputService:
                 conflicts += len(mataKuliahList) - 1
         
         analysisContent = f"""Total Mata Kuliah: {totalCourses}
-Total Ruangan: {totalRooms}
-Total Assignment: {totalAssignments}
-Konflik Terdeteksi: {conflicts}
-
-Kualitas Jadwal: {'Baik' if state.state_value > -10 else 'Perlu Perbaikan'}
-Utilisasi Slot: {(totalAssignments / (totalRooms * 55)) * 100:.1f}%"""
+                            Total Ruangan: {totalRooms}
+                            Total Assignment: {totalAssignments}
+                            Konflik Terdeteksi: {conflicts}
+                            Kualitas Jadwal: {'Baik' if state.state_value > -10 else 'Perlu Perbaikan'}
+                            Utilisasi Slot: {(totalAssignments / (totalRooms * 55)) * 100:.1f}%"""
         
         info.addSection("ANALISIS JADWAL", analysisContent)
         
@@ -150,7 +144,9 @@ Utilisasi Slot: {(totalAssignments / (totalRooms * 55)) * 100:.1f}%"""
             print("\nTidak ada jadwal yang dapat ditampilkan.")
             print("State mungkin kosong atau tidak ada assignment.")
     
-    @staticmethod
+    @staticmethod # (1.) Ini cuman nampilin pesan doang
+    # langsung ke Settings.getValidFilePath (2.) --> tapi itu buat cek validPathnya aja si
+    # langsung ketiga deng (3.) UserInterfaceServices.selectAlgorithm
     def showWelcome() -> None:
         """Tampilkan welcome message"""
         print("\n" + "="*80)

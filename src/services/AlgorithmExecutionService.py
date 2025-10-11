@@ -6,11 +6,9 @@ from src.algorithms.genetic import GeneticAlgorithm
 from src.eval.evaluator import kasus_mahasiswa_bentrok, kasus_kapasitas_kurang, kasus_dosen_gabisa, kasus_dosen_bentrok
 
 class AlgorithmExecutionService:
-    """Service untuk menjalankan algoritma optimasi"""
     
     @staticmethod
     def runHillClimbing(initialState: State, config: Dict[str, Any]) -> Tuple[State, Dict[str, Any]]:
-        """Menjalankan algoritma Hill Climbing dengan konfigurasi yang diberikan"""
         # definisi objective functions untuk evaluasi
         objectiveFunctions = (
             kasus_mahasiswa_bentrok,  # fungsi untuk deteksi bentrok mahasiswa
@@ -30,6 +28,7 @@ class AlgorithmExecutionService:
         )
         
         # jalankan algoritma dan return hasil
+        # nah return nya disini 
         return hillClimbingAlgorithm.search(initialState, *objectiveFunctions)
     
     @staticmethod

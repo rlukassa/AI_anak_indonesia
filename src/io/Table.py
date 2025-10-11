@@ -1,26 +1,20 @@
 from typing import List, Any
 
-class Table:
-    """Simple Table class untuk menampilkan tabel jadwal"""
-    
-    def __init__(self):
+class Table:    
+    def __init__(self): # constructor
         self.headers: List[str] = []
         self.rows: List[List[Any]] = []
     
-    def setHeaders(self, headers: List[str]) -> None:
-        """Set header kolom tabel"""
+    def setHeaders(self, headers: List[str]) -> None: # bikin header
         self.headers = headers
     
-    def addRow(self, rowData: List[Any]) -> None:
-        """Tambah baris ke tabel"""
+    def addRow(self, rowData: List[Any]) -> None: #tambah baris
         self.rows.append(rowData)
     
-    def display(self) -> None:
-        """Display tabel ke console"""
+    def display(self) -> None: # dari fungsi render dibawah diprintkan
         print(self.render())
     
-    def render(self) -> str:
-        """Render tabel dengan format box drawing"""
+    def render(self) -> str: # ini crit sectionnya, fungsi bikin tabelnya 
         if not self.headers:
             return ""
         
