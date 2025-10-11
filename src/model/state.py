@@ -10,16 +10,21 @@ class State:
     _available_times: Set[Waktu] = {
         Waktu(hari, jam) for hari in ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"] for jam in range(7, 18)
     }
+    # ini buat dapatin waktu domain dari senin sampai jumat jam 7-17
     
 
     def __init__(self):
         # Object Domain
-        self.repo              : Repository                # Must be initialize
-        self.available_slots   : Set[Tuple[str, Waktu]]    # Must be initialize
+        self.repo              : Repository                # Must be initialize 
+        self.available_slots   : Set[Tuple[str, Waktu]]    # Must be initialize # kotak papan jadwal
         
         # Attribute
-        self.assignments: Dict[Tuple[str, Waktu], MataKuliah] = {}
-        self.times_to_mk: Dict[Waktu, List[MataKuliah]] = {}
+        self.assignments: Dict[Tuple[str, Waktu], MataKuliah] = {} # mata kuliah yang udah di assign ke slot
+        # jadwal utama
+        # contohnya : (IF101, Waktu("Senin", 8)) : MataKuliah("IF101", 30, 3)
+        self.times_to_mk: Dict[Waktu, List[MataKuliah]] = {} # buat cek siapa aj yang ada di waktu itu
+        # key nya Waktu, value nya list MataKuliah yang ada di waktu itu
+        # buat deteksi bentrok matkul di waktu yang sama
 
         # State Value
         self.state_value: float = 0
@@ -27,37 +32,35 @@ class State:
 
     def initialize_domain(self, repo: Repository):
         """Inisialisasi Object Domain, termasuk repo"""
-        self.repo = repo
-        self.available_slots = [
+        self.repo = repo  # simpan semua data akademik
+        self.available_slots = [  # kotak papan jadwal
             (kode_ruangan, waktu)
             for kode_ruangan in list(self.repo.ruangan.keys())
             for waktu in State._available_times
-        ]
+        ]  # ini buat generate semua slot (ruangan dan waktu) dengan kombinasi 
 
-
-    def copy(self) -> "State":
+    def copy(self) -> "State":  # state belum ada, tapi bakal ada (state baru)
         """Mengcopy State. Salinan hanya mencapai tingkat pemetaan, adapun tuple dan repo
         masih merujuk ke objek yang sama."""
-        new_state = State()
+        new_state = State() # shallow copy
         new_state.repo = self.repo
         new_state.available_slots = self.available_slots
-        new_state.assignments = dict(self.assignments)
-        new_state.times_to_mk = {k: list(v) for k, v in self.times_to_mk.items()}
+        new_state.assignments = dict(self.assignments) #deep copy dict assignments biar ga refer ke dict yang sama
+        new_state.times_to_mk = {k: list(v) for k, v in self.times_to_mk.items()} # deep copy dict + list
         new_state.state_value = self.state_value
         return new_state
 
-
     def assign_mk(self, kode_mk: str, kode_ruangan: str, waktu: Waktu):
         """Menempatkan MataKuliah ke slot"""
-        slot = (kode_ruangan, waktu)
+        slot = (kode_ruangan, waktu) # assign slot sebagai tuple
         
-        if slot in self.assignments:
+        if slot in self.assignments: # kalo dah ada isinya, oleh karena matakuliah lain
             raise ValueError(f"Slot {slot} sudah terisi oleh mata kuliah lain.")
-        matkul = self.repo.mata_kuliah[kode_mk]
-        self.assignments[slot] = matkul
+        matkul = self.repo.mata_kuliah[kode_mk] # kalo ga, ambil objek matkul dari repo
+        self.assignments[slot] = matkul # assign matkul ke slot
 
         if waktu not in self.times_to_mk:
-            self.times_to_mk[waktu] = list()
+            self.times_to_mk[waktu] = list() # kalo blm ada, inisialisasi list kosong
         self.times_to_mk[waktu].append(matkul)
         
     
@@ -104,7 +107,7 @@ class State:
         return state_value
 
 
-    def generate_all_successors(self, *objectives) -> list["State"]:
+    def generate_all_successors(self, *objectives) -> list["State"]: ## buat hill climbing/
         successors = []
         for slot1 in list(self.assignments.keys()):
             for slot2 in self.available_slots:
