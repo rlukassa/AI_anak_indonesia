@@ -91,17 +91,3 @@ class AlgorithmConfigService:
             'crossoverRate': crossover_rate
         }
 
-class FileNameGenerationService:
-    """Service khusus untuk generate nama file (Single Responsibility)"""
-    
-    @staticmethod
-    def generateFilename(algorithm_name: str) -> str:
-        """Generate nama file dengan timestamp"""
-        timestamp = int(time.time())
-        clean_alg_name = algorithm_name.lower().replace(" ", "_")
-        return f"hasil_{clean_alg_name}_{timestamp}"
-    
-    @staticmethod
-    def showSaveSuccess(filename: str):
-        """Tampilkan pesan sukses save file"""
-        print(f"\nHasil berhasil disimpan dengan nama: {filename}_*.txt")
