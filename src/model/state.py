@@ -120,51 +120,41 @@ class State:
         return state_value
 
 
-    def generate_successor(self, isRandom: bool = True, *objectives: Callable) -> "State":
-        """Menghasilkan sebuah State baru yang merupakan suksesor.
-        Suksesor bisa acak dan bisa tidak acak (suksesor dengan state value tertinggi)."""
+    def generate_all_successors(self, *objectives) -> list["State"]:
+        successors = []
+        for slot1 in list(self.assignments.keys()):
+            for slot2 in self.available_slots:
+                if slot1 == slot2:
+                    continue
+                if slot2 in self.assignments and self.assignments[slot2] == self.assignments[slot1]:
+                    continue
+                s = self.copy()
+                s.swap_mk(slot1, slot2)
+                s.state_value = s.count_state_value(*objectives)
+                successors.append(s)
+        return successors
 
+    def generate_random_successor(self, *objectives) -> "State":
         successor = self.copy()
-
-        # 1. Pilih slot yang sudah terisi secara acak
         if not successor.assignments:
-            return successor  # Tidak ada slot yang bisa dipilih
+            return successor
 
         slot1 = random.choice(list(successor.assignments.keys()))
         mk1 = successor.assignments[slot1]
 
-        # 2. Definisikan slot perubahan
-        possible_slots = [
+        valid_slots = [
             slot for slot in successor.available_slots
             if slot != slot1 and (
                 slot not in successor.assignments or successor.assignments[slot] != mk1
             )
         ]
-        if not possible_slots:
-            return successor  # Tidak ada slot yang valid untuk swap
+        if not valid_slots:
+            return successor
 
-        # 3. Pilih suksesor:
-        slot2 = random.choice(possible_slots)
-        if not isRandom:    
-            try_successor = successor.copy()
-            try_successor.swap_mk(slot1, slot2)
-            state_value = try_successor.count_state_value(*objectives)
-            for try_slot in possible_slots:
-                try_successor = successor.copy()
-                try_successor.swap_mk(slot1, try_slot)
-                try_state_value = try_successor.count_state_value(*objectives)
-                if state_value < try_state_value:
-                    slot2 = try_slot
-                    state_value = try_state_value
-
-        # 4. Swap kedua slot
+        slot2 = random.choice(valid_slots)
         successor.swap_mk(slot1, slot2)
-
-        # 5. Hitung state_value
         successor.state_value = successor.count_state_value(*objectives)
-
         return successor
-    
 
     def initialize_random_state(self, *objectives: Callable):
         """Inisialisasi sebuah state secara random"""
