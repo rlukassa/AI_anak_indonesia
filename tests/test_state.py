@@ -138,18 +138,24 @@ def run_tests():
         print("RESULT: count_state_value GAGAL.")
 
     # -----------------------------------------------------------
-    print_test_section("PENGUJIAN generate_successor (Random)")
+    print_test_section("PENGUJIAN generate_all_successors")
     
-    successor_random = state_conflict.generate_successor(True, *objectives)
+    successors = state_conflict.generate_all_successors(*objectives)
     
-    # Cek apakah ada perubahan
-    is_changed = (successor_random.assignments != state_conflict.assignments)
-    print(f"Assignments berhasil diubah: {is_changed}")
-
-    if is_changed:
-        print("RESULT: generate_successor (Random) BERHASIL.")
+    # Cek apakah ada successors yang dihasilkan
+    print(f"Jumlah successors yang dihasilkan: {len(successors)}")
+    
+    if len(successors) > 0:
+        # Cek apakah ada successor yang berbeda dari state awal
+        has_different_state = any(s.assignments != state_conflict.assignments for s in successors)
+        print(f"Ada successor dengan assignments berbeda: {has_different_state}")
+        
+        if has_different_state:
+            print("RESULT: generate_all_successors BERHASIL.")
+        else:
+            print("RESULT: generate_all_successors GAGAL (semua successor sama).")
     else:
-        print("RESULT: generate_successor (Random) GAGAL (state tidak berubah).")
+        print("RESULT: generate_all_successors GAGAL (tidak ada successor dihasilkan).")
 
     # -----------------------------------------------------------
     print_test_section("PENGUJIAN generate_successor (Best Move)")
@@ -171,7 +177,7 @@ def run_tests():
     # Analisis Best Move:
     # Pindah MKA ke slot_siang_r2 (Senin, 9). Wati bisa. Cost Dosen Gabisa = 0. State Value = 0.0 (BEST)
 
-    successor_best = state_test_best.generate_successor(False, *objectives)
+    successor_best = state_test_best.generate_random_successor(*objectives)
     final_value = successor_best.count_state_value(*objectives)
     
     is_optimal_move = (final_value > initial_value)
@@ -192,4 +198,4 @@ def run_tests():
 
 if __name__ == "__main__":
     run_tests()
-    run_tests()
+    # run_tests()

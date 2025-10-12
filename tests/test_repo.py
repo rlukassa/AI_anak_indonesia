@@ -6,6 +6,7 @@ def print_entity(title: str, obj: Any) -> None:
     print(f"\n=== {title} ===")
     for attr, val in vars(obj).items():
         print(f"{attr:20}: {val}")
+        print(type(obj))
 
 
 def run(path: str) -> None:
