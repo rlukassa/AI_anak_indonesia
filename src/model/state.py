@@ -48,7 +48,6 @@ class State:
         new_state.available_slots = self.available_slots
         new_state.assignments = dict(self.assignments)
         new_state.times_to_mk = {k: list(v) for k, v in self.times_to_mk.items()}
-        # Perbaikan: Lakukan deep copy untuk mk_to_slots
         new_state.mk_to_slots = {k: list(v) for k, v in self.mk_to_slots.items()}
         new_state.state_value = self.state_value
         return new_state

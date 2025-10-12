@@ -4,21 +4,23 @@ from src.io.repo_loader import Repository
 from src.eval.evaluator import *
 from src.model.entities import *
 from src.model.state import State
+from src.algorithms.local_search import LocalSearch
+from src.algorithms.hill_climbing import HillClimbing
 import random
 
-class GeneticAlgorithm:
-
-    def __init__(self, state:State, conf_crossover:Dict[str, List[bool]]):
-        self.state = state
-        self.conf_crossover: Dict[str, List[bool]] = conf_crossover # Dict[kode_matkul, list_konfigurasi]
-        # list_konfigurasi = list berisi 0 atau 1
-        # 0 = tidak di-cross-kan; 1 = di-cross-kan
-        # ukuran list sesuai jumlah sks
-        # mutation = matkul dengan slot tabarakan di-assign ke slot kosong
+class GeneticAlgorithm(LocalSearch):
 
 
-    def __init__(self, state:State):
-        self.state = state
+    def __init__(self):
+        self.state = State()
+
+    # conf_crossover: Dict[str, List[bool]] = conf_crossover # Dict[kode_matkul, list_konfigurasi]
+    # # list_konfigurasi = list berisi 0 atau 1
+    # # 0 = tidak di-cross-kan; 1 = di-cross-kan
+    # # ukuran list sesuai jumlah sks
+    # # mutation = matkul dengan slot tabarakan di-assign ke slot kosong
+
+    def _initialize_conf_crossover(self, state:State):
         # self.conf_crossover = {
         #     kode_matkul: [
         #         True if i == state.repo.mata_kuliah[kode_matkul].jumlah_sks - 1 else False for i in range(
@@ -29,15 +31,19 @@ class GeneticAlgorithm:
         self.conf_crossover = {
             kode_matkul: [
                 True if i % 2 == 0 else False for i in range(
-                    state.repo.mata_kuliah[kode_matkul].jumlah_sks
+                    self.state.repo.mata_kuliah[kode_matkul].jumlah_sks
                 )
             ]
             for kode_matkul, _ in self.state.repo.mata_kuliah.items()
         }
+        
 
-
-    def search(self, jml_parent:int, jml_iterasi:int, *objectives:Callable) -> State:
+    def search(self, state:State, *objectives:Callable, jml_parent:int=4, jml_iterasi:int=1000, conf_crossover=None) -> State:
         """Genetic Algorithm"""
+        self.state = state
+        hill_climbing = HillClimbing()
+        
+        self._initialize_conf_crossover(conf_crossover)
         
         if jml_parent % 2 != 0:
             raise ValueError("N harus kelipatan 2.")
@@ -46,8 +52,10 @@ class GeneticAlgorithm:
         selected_parent:List[State] = []
         for _ in range(jml_parent):
             parent_state = self.state.copy()
-            parent_state.initialize_random_state(*objectives)
-            selected_parent.append(parent_state)
+            # Hill Climbing dulu boleh lah ya
+            selected_parent.append(hill_climbing.search(parent_state, *objectives))
+            # parent_state.initialize_random_state(*objectives)
+            # selected_parent.append(parent_state)
         
         min_state_value = min([s.state_value for s in selected_parent])
         best_state = [s for s in selected_parent if s.state_value == max([s.state_value for s in selected_parent])][0]
@@ -67,7 +75,7 @@ class GeneticAlgorithm:
                 p1 = selected_parent[i]
                 p2 = selected_parent[i+1]
                 
-                c1, c2 = self.crossover_mutation(p1, p2, *objectives)
+                c1, c2 = self._crossover_mutation(p1, p2, *objectives)
 
                 # Konsep Elitisme
                 urutan_state = sorted([p1, p2, c1, c2], key=lambda x: x.state_value, reverse=True)
@@ -88,7 +96,7 @@ class GeneticAlgorithm:
         
         return best_state
 
-    def crossover_mutation(self, stateA:State, stateB:State, *objectives:Callable) -> Tuple[State, State]:
+    def _crossover_mutation(self, stateA:State, stateB:State, *objectives:Callable) -> Tuple[State, State]:
         """Melakukan crossover dan mutation. Mengapa disatukan? 
         karena mutationnya sangat bergantung dengan hasil crossover"""
         
@@ -116,7 +124,7 @@ class GeneticAlgorithm:
                 # Conflict on A
                 if slot_B in state_A.assignments:
                     # Mana yang harus mengalah
-                    mutable_matkul = GeneticAlgorithm.select_mutable_matkul(state_A, slot_B, kode_matkul_A, *objectives)
+                    mutable_matkul = GeneticAlgorithm._select_mutable_matkul(state_A, slot_B, kode_matkul_A, *objectives)
                     mutable_A.append(mutable_matkul)
                     if mutable_matkul != kode_matkul_A:
                         state_A.remove_mk(slot_A[0], slot_A[1]) # awal
@@ -129,7 +137,7 @@ class GeneticAlgorithm:
                 # Conflict on B
                 if slot_A in state_B.assignments:
                     # Mana yang harus mengalah
-                    mutable_matkul = GeneticAlgorithm.select_mutable_matkul(state_B, slot_A, kode_matkul_B, *objectives)
+                    mutable_matkul = GeneticAlgorithm._select_mutable_matkul(state_B, slot_A, kode_matkul_B, *objectives)
                     mutable_B.append(mutable_matkul)
                     if mutable_matkul != kode_matkul_B:
                         state_B.remove_mk(slot_B[0], slot_B[1]) # awal
@@ -156,7 +164,7 @@ class GeneticAlgorithm:
         return state_A, state_B
     
 
-    def select_mutable_matkul(state:State, slot:Tuple[str, Waktu], new_matkul:str, *objectives:Callable) -> str:
+    def _select_mutable_matkul(state:State, slot:Tuple[str, Waktu], new_matkul:str, *objectives:Callable) -> str:
         """Mencari matkul yang akan dimutasi karena konflik diantara matkul lama dan matkul yang hendak di-crossover"""
         old_matkul = state.assignments[slot].kode
         new_state = state.copy()

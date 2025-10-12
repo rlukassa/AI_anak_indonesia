@@ -150,12 +150,13 @@ class TestGeneticAlgorithmWithJSON(unittest.TestCase):
         print()
 
         # Inisialisasi dan jalankan algoritma genetika
-        ga = GeneticAlgorithm(initial_state)
+        ga = GeneticAlgorithm()
         # Menjalankan GA dengan parameter yang disesuaikan
         solution = ga.search(
-            10,
-            1000,
-            *self.objectives
+            initial_state,
+            *self.objectives,
+            jml_parent=10,
+            jml_iterasi=1000
         )
 
         # Verifikasi hasil
