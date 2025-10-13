@@ -1,0 +1,222 @@
+{
+"kelas_mata_kuliah": [
+{
+"kode": "IF3071_K01",
+"nama": "Basis Data",
+"jumlah_mahasiswa": 60,
+"sks": 3,
+"jenis_ruangan_khusus": "Standard"
+},
+{
+"kode": "IF3130_K01",
+"nama": "Pengantar Kecerdasan Buatan",
+"jumlah_mahasiswa": 45,
+"sks": 2,
+"jenis_ruangan_khusus": "Standard"
+},
+{
+"kode": "IF3110_K02",
+"nama": "Struktur Data",
+"jumlah_mahasiswa": 70,
+"sks": 3,
+"jenis_ruangan_khusus": "Standard"
+},
+{
+"kode": "IF3140_K01",
+"nama": "Sistem Operasi",
+"jumlah_mahasiswa": 55,
+"sks": 2,
+"jenis_ruangan_khusus": "Standard"
+},
+{
+"kode": "IF3230_K01",
+"nama": "Pemrograman Fungsional (Lab)",
+"jumlah_mahasiswa": 30,
+"sks": 4,
+"jenis_ruangan_khusus": "Lab Komputer"
+},
+{
+"kode": "IF3230_K02",
+"nama": "Pemrograman Fungsional (Lab)",
+"jumlah_mahasiswa": 30,
+"sks": 4,
+"jenis_ruangan_khusus": "Lab Komputer"
+},
+{
+"kode": "IF3120_K01",
+"nama": "Pengantar Kriptografi",
+"jumlah_mahasiswa": 90,
+"sks": 4,
+"jenis_ruangan_khusus": "Standard"
+},
+{
+"kode": "IF3150_K01",
+"nama": "Interaksi Manusia & Komputer",
+"jumlah_mahasiswa": 50,
+"sks": 3,
+"jenis_ruangan_khusus": "Standard"
+},
+{
+"kode": "IF4010_K01",
+"nama": "Kecerdasan Komputasional",
+"jumlah_mahasiswa": 120,
+"sks": 3,
+"jenis_ruangan_khusus": "Standard"
+},
+{
+"kode": "IF4010_K02",
+"nama": "Kecerdasan Komputasional",
+"jumlah_mahasiswa": 120,
+"sks": 3,
+"jenis_ruangan_khusus": "Standard"
+},
+{
+"kode": "IF3130_K02",
+"nama": "Pengantar Kecerdasan Buatan",
+"jumlah_mahasiswa": 45,
+"sks": 2,
+"jenis_ruangan_khusus": "Standard"
+}
+],
+"ruangan": [
+{
+"kode": "7609",
+"kuota": 60,
+"tipe": "Standard"
+},
+{
+"kode": "7606",
+"kuota": 80,
+"tipe": "Standard"
+},
+{
+"kode": "multimedia",
+"kuota": 40,
+"tipe": "Standard"
+},
+{
+"kode": "7601",
+"kuota": 50,
+"tipe": "Standard"
+},
+{
+"kode": "LAB101",
+"kuota": 35,
+"tipe": "Lab Komputer"
+},
+{
+"kode": "LAB102",
+"kuota": 35,
+"tipe": "Lab Komputer"
+},
+{
+"kode": "auditorium",
+"kuota": 150,
+"tipe": "Standard"
+},
+{
+"kode": "LAB201",
+"kuota": 30,
+"tipe": "Lab Komputer"
+}
+],
+"mahasiswa": [
+{
+"nim": "13523601",
+"daftar_mk": ["IF3071_K01", "IF3130_K01", "IF3150_K01"],
+"prioritas": [1, 2, 3]
+},
+{
+"nim": "135236641",
+"daftar_mk": ["IF3110_K02", "IF3130_K01", "IF3140_K01"],
+"prioritas": [1, 2, 3]
+},
+{
+"nim": "13523669",
+"daftar_mk": ["IF3140_K01", "IF3071_K01", "IF3120_K01"],
+"prioritas": [1, 2, 3]
+},
+{
+"nim": "13523600",
+"daftar_mk": ["IF3110_K02", "IF3230_K01"],
+"prioritas": [1, 2]
+},
+{
+"nim": "13523711",
+"daftar_mk": ["IF3230_K01", "IF3120_K01", "IF3071_K01"],
+"prioritas": [1, 2, 3]
+},
+{
+"nim": "13523722",
+"daftar_mk": ["IF3150_K01", "IF3140_K01", "IF3230_K02"],
+"prioritas": [1, 2, 3]
+},
+{
+"nim": "13523733",
+"daftar_mk": ["IF3071_K01", "IF3110_K02", "IF3130_K01", "IF3120_K01"],
+"prioritas": [1, 2, 3, 4]
+},
+{
+"nim": "13523744",
+"daftar_mk": ["IF4010_K01", "IF3120_K01", "IF3230_K01", "IF3150_K01"],
+"prioritas": [1, 2, 3, 4]
+},
+{
+"nim": "13523755",
+"daftar_mk": ["IF4010_K02", "IF3130_K02", "IF3071_K01", "IF3140_K01"],
+"prioritas": [1, 2, 3, 4]
+},
+{
+"nim": "13523766",
+"daftar_mk": ["IF3130_K01", "IF3130_K02", "IF3140_K01", "IF3110_K02"],
+"prioritas": [1, 2, 3, 4]
+}
+],
+"dosen": [
+{
+"nama": "Prof. Muhaman Nazih Najmudin, M.Eng.",
+"mata_kuliah_diampu": ["IF3071_K01", "IF3140_K01"],
+"waktu_preferensi": [["Senin", 9], ["Senin", 10], ["Rabu", 13], ["Kamis", 14], ["Jumat", 15]]
+},
+{
+"nama": "Ir. Brian Ricardo Tamin, S.Kom.",
+"mata_kuliah_diampu": ["IF3110_K02"],
+"waktu_preferensi": [["Selasa", 8], ["Selasa", 9], ["Kamis", 10], ["Jumat", 7]]
+},
+{
+"nama": "Drs. Lukas Raja Agripa, M.T., M.Sc.",
+"mata_kuliah_diampu": ["IF3130_K01"],
+"waktu_preferensi": [["Rabu", 9], ["Rabu", 10], ["Jumat", 8], ["Selasa", 13]]
+},
+{
+"nama": "Dr. Bintang Angkasa, S.T., M.Sc.",
+"mata_kuliah_diampu": ["IF3230_K01", "IF3230_K02"],
+"waktu_preferensi": [
+["Senin", 10], ["Senin", 11], ["Senin", 12], ["Senin", 13],
+["Rabu", 13], ["Rabu", 14], ["Rabu", 15], ["Rabu", 16]
+]
+},
+{
+"nama": "Dr. Citra Sativa, M.Kom.",
+"mata_kuliah_diampu": ["IF3120_K01", "IF3150_K01"],
+"waktu_preferensi": [
+["Selasa", 8], ["Selasa", 9], ["Selasa", 10], ["Selasa", 11],
+["Rabu", 12],
+["Jumat", 13], ["Jumat", 14], ["Jumat", 15], ["Jumat", 16]
+]
+},
+{
+"nama": "Dr. Rian Adi Putra, Ph.D.",
+"mata_kuliah_diampu": ["IF4010_K01", "IF4010_K02"],
+"waktu_preferensi": [
+["Senin", 14], ["Senin", 15], ["Senin", 16],
+["Kamis", 14], ["Kamis", 15], ["Kamis", 16]
+]
+},
+{
+"nama": "Ir. Tania Mahardika, M.T.",
+"mata_kuliah_diampu": ["IF3130_K02"],
+"waktu_preferensi": [["Selasa", 7], ["Selasa", 17], ["Rabu", 7], ["Rabu", 17]]
+}
+]
+}

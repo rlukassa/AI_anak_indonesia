@@ -24,9 +24,7 @@ class OutputService:
         
         elif algorithmName == "Genetic Algorithm":
             info.addInfo("Population Size", f"{parameters.get('populationSize', 0):,}")
-            info.addInfo("Max Generations", f"{parameters.get('generations', 0):,}")
-            info.addInfo("Crossover Rate", f"{parameters.get('crossoverRate', 0):.2f}")
-            info.addInfo("Mutation Rate", f"{parameters.get('mutationRate', 0):.2f}")
+            info.addInfo("Max Iteration", f"{parameters.get('max_iteration', 0):,}")
         
         # Add execution statistics
         if 'execution_time' in executionStats:
@@ -45,6 +43,9 @@ class OutputService:
             improvement = executionStats['final_state_value'] - executionStats['initial_state_value']
             info.addInfo("Peningkatan", f"{improvement:+.2f}")
         
+        if 'avg_state_value' in executionStats:
+            info.addInfo("Rata-Rata State Value", f"{executionStats['avg_state_value']:.2f}")
+
         return info
     
     @staticmethod

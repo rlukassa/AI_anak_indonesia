@@ -77,30 +77,26 @@ class AlgorithmConfigService:
     # buat GA
     # sama kayak HC, config parameternya disini 
     def configureGeneticAlgorithm() -> Dict[str, Any]:
-        pass 
-        # TODO :
-        # """Konfigurasi parameter Genetic Algorithm"""
-        # print("\n" + "="*50)
-        # print("KONFIGURASI GENETIC ALGORITHM")
-        # print("="*50)
+        """Konfigurasi parameter Genetic Algorithm"""
+        print("\n" + "="*50)
+        print("KONFIGURASI GENETIC ALGORITHM")
+        print("="*50)
         
-        # population_size = int(input("Population Size (rekomendasi 50): "))
-        # generations = int(input("Max Generations (rekomendasi 100): "))
-        # mutation_rate = float(input("Mutation Rate (rekomendasi 0.1): "))
-        # crossover_rate = float(input("Crossover Rate (rekomendasi 0.8): "))
+        while True:
+            population_size =   int(input("Population Size (per iterasi): "))
+            max_iteration =     int(input("Maximum Iteration            : "))
+            if population_size % 2 != 0:
+                print("Population size harus kelipatan 2.")
+            else: break
         
-        # print(f"\nParameter Genetic Algorithm:")
-        # print(f"   Population Size: {population_size}")
-        # print(f"   Max Generations: {generations}")
-        # print(f"   Mutation Rate: {mutation_rate}")
-        # print(f"   Crossover Rate: {crossover_rate}")
+        print(f"\nParameter Genetic Algorithm:")
+        print(f"   Population Size: {population_size}")
+        print(f"   Max Iteration  : {max_iteration}")
         
-        # return {
-        #     'populationSize': population_size,
-        #     'generations': generations,
-        #     'mutationRate': mutation_rate,
-        #     'crossoverRate': crossover_rate
-        # }
+        return {
+            'populationSize': population_size,
+            'max_iteration': max_iteration
+        }
 
 
 # NAH ntar kan return parameternya 

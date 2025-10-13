@@ -71,10 +71,8 @@ class AlgorithmExecutionService:
         
         # buat instance algoritma genetic algorithm
         geneticAlgorithm = GeneticAlgorithm(
-            config['populationSize'], # ukuran populasi
-            config['generations'],    # maksimum generasi
-            config['mutationRate'],   # tingkat mutasi
-            config['crossoverRate']   # tingkat crossover
+            config['populationSize'], # ukuran populasi per iterasi
+            config['max_iteration'],  # maksimum iterasi
         )
         
         # jalankan algoritma dan return hasil

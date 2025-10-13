@@ -1,3 +1,4 @@
+from os import system, name
 import src.io.repo_loader as Repository  # import modul repository loader
 from src.model.state import State  # import class state untuk jadwal
 from src.services.OutputService import OutputService  # import unified output service
@@ -13,13 +14,18 @@ from src.eval.evaluator import (  # import objective functions
 )
 
 def main():  # fungsi utama program sebagai driver
+    if name == 'nt':
+        _ = system('cls')
+    else:
+        _ = system('clear')
     OutputService.showWelcome()  
     filePath = UserInterfaceService.getValidFilePath()
     repository = Repository.create_repo(filePath) # yang ubah ke object itu
     selectedAlgorithm = UserInterfaceService.selectAlgorithm()  # service untuk pilih algoritma
     initialState = State()  # buat state kosong
     initialState.initialize_domain(repository)  # inisialisasi dengan data repository
-    objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang, kasus_dosen_gabisa, kasus_dosen_bentrok)
+    # objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang, kasus_dosen_gabisa, kasus_dosen_bentrok)
+    objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang)
     initialState.initialize_random_state(*objectiveFunctions)  # buat assignment awal
     OutputService.showOptimizationStart()  # pesan mulai 
 

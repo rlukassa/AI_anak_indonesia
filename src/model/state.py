@@ -29,14 +29,29 @@ class State:
         self.state_value: float = 0
 
 
-    def initialize_domain(self, repo: Repository):
+    def initialize_domain(self, repo: Repository, with_dosen:bool=True):
         """Inisialisasi Object Domain, termasuk repo"""
         self.repo = repo
-        self.available_slots = [
+        available_time:Set[Waktu] = {}
+        if with_dosen:
+            available_time = {
+                waktu
+                for _, dosen in self.repo.dosen.items()
+                for waktu in dosen.waktu_preferensi
+            }
+        else:
+            available_time = State._available_times
+        self.available_slots = {
             (kode_ruangan, waktu)
             for kode_ruangan in list(self.repo.ruangan.keys())
-            for waktu in State._available_times
-        ]
+            for waktu in available_time
+        }
+        min_slot = sum(
+            matkul.jumlah_sks
+            for matkul in self.repo.mata_kuliah.values()
+        )
+        if len(self.available_slots) <= min_slot:
+            raise ValueError("DOMAIN ERROR! slot dosen tidak cukup")
 
 
     # Ubah method copy() seperti di bawah ini:
@@ -100,9 +115,6 @@ class State:
 
         mk1 = self.remove_mk(kode_ruangan1, waktu1)
         mk2 = self.remove_mk(kode_ruangan2, waktu2)
-
-        if mk1 is not None and mk2 is not None and mk1.kode == mk2.kode:
-            return
 
         if mk1 is not None:
             self.assign_mk(mk1.kode, kode_ruangan2, waktu2)
