@@ -86,20 +86,26 @@ class HillClimbing(LocalSearch):
             break
         return current
     
-    
-    def _stochastic(self, state: State, iterations:int, *objectives) -> State:
+    def _stochastic(self, state: State, iterations: int, *objectives) -> State:
         """ stochastic hill-climbing """
         current = state.copy()
         current.initialize_random_state(*objectives)
         
-        for _ in range(iterations):
-            # generate random successor
-            successor = current.generate_random_successor(*objectives)
+        steps = 0
+        while steps < iterations:
+            successors = current.generate_all_successors(*objectives)
+            if not successors:
+                break
             
-            # move if better
-            if successor.state_value > current.state_value:
-                current = successor 
+            better = [s for s in successors if s.state_value > current.state_value]
+            if not better:
+                break
+            
+            # random dari better states
+            current = random.choice(better)
+            steps += 1
         return current
+
     
     
     def _random_restart(self, state: State, restarts:int, *objectives) -> State:

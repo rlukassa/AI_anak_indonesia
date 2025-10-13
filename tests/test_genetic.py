@@ -1,10 +1,7 @@
-# test_genetic.py
 import unittest
-import json
 from typing import List, Callable
 
-from src.io.repo_loader import Repository, create_repo
-from src.model.entities import Dosen, MataKuliah, Mahasiswa, Waktu, Ruangan
+from src.io.repo_loader import create_repo
 from src.model.state import State
 from src.eval.evaluator import (
     kasus_mahasiswa_bentrok,
@@ -14,106 +11,10 @@ from src.eval.evaluator import (
 )
 from src.algorithms.genetic import GeneticAlgorithm
 
-# Kode JSON yang akan digunakan sebagai input data
-REPO_DATA_JSON = {
-    "kelas_mata_kuliah": [
-        {
-            "kode": "IF3071_K01",
-            "jumlah_mahasiswa": 60,
-            "sks": 3
-        },
-        {
-            "kode": "IF3130_K01",
-            "jumlah_mahasiswa": 45,
-            "sks": 2
-        },
-        {
-            "kode": "IF3110_K02",
-            "jumlah_mahasiswa": 70,
-            "sks": 3
-        },
-        {
-            "kode": "IF3140_K01",
-            "jumlah_mahasiswa": 55,
-            "sks": 2
-        }
-    ],
-    "ruangan": [
-        {
-            "kode": "7609",
-            "kuota": 60
-        },
-        {
-            "kode": "7606",
-            "kuota": 80
-        },
-        {
-            "kode": "multimedia",
-            "kuota": 40
-        }
-    ],
-    "mahasiswa": [
-        {
-            "nim": "13523601",
-            "daftar_mk": ["IF3071_K01", "IF3130_K01"],
-            "prioritas": [1, 2]
-        },
-        {
-            "nim": "135236641",
-            "daftar_mk": ["IF3110_K02", "IF3130_K01"],
-            "prioritas": [1, 2]
-        },
-        {
-            "nim": "13523669",
-            "daftar_mk": ["IF3140_K01", "IF3071_K01"],
-            "prioritas": [1, 2]
-        },
-        {
-            "nim": "13523600",
-            "daftar_mk": ["IF3110_K02"],
-            "prioritas": [1]
-        }
-    ],
-    "dosen": [
-        {
-            "nama": "Prof. Muhaman Nazih Najmudin, M.Eng.",
-            "mata_kuliah_diampu": ["IF3071_K01", "IF3140_K01"],
-            "waktu_preferensi": [["Senin", 9], ["Senin", 10], ["Rabu", 13], ["Kamis", 14], ["Jumat", 15]]
-        },
-        {
-            "nama": "Ir. Brian Ricardo Tamin, S.Kom.",
-            "mata_kuliah_diampu": ["IF3110_K02"],
-            "waktu_preferensi": [["Selasa", 8], ["Selasa", 9], ["Kamis", 10]]
-        },
-        {
-            "nama": "Drs. Lukas Raja Agripa, M.T., M.Sc.",
-            "mata_kuliah_diampu": ["IF3130_K01"],
-            "waktu_preferensi": [["Rabu", 9], ["Rabu", 10], ["Jumat", 8]]
-        }
-    ]
-}
-
-# Membuat file JSON sementara untuk pengujian
-def create_dummy_json(file_path: str):
-    """Membuat file dummy JSON dengan data yang diberikan."""
-    with open(file_path, 'w') as f:
-        json.dump(REPO_DATA_JSON, f, indent=4)
-
-class JSONParser:
-    def __init__(self, path: str):
-        with open(path, 'r') as f:
-            self.data = json.load(f)
 
 class TestGeneticAlgorithmWithJSON(unittest.TestCase):
     def setUp(self):
-        # Mengatur path file JSON sementara
-        self.json_path = "dummy_repo_data.json"
-        
-        # Mengubah modul 'repo_loader' agar menggunakan JSONParser dummy
-        import sys
-        sys.modules['src.io.repo_loader'].JSONParser = JSONParser
-        
-        create_dummy_json(self.json_path)
+        self.json_path = "data/sample_input.json"
         self.repo = create_repo(self.json_path)
 
         # Mendefinisikan fungsi objektif yang akan digunakan

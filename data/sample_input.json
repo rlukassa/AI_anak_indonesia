@@ -61,7 +61,7 @@
         {
             "nama": "Prof. Muhaman Nazih Najmudin, M.Eng.",
             "mata_kuliah_diampu": ["IF3071_K01", "IF3140_K01"],
-            "waktu_preferensi": [["Senin", 9], ["Senin", 10], ["Rabu", 13]]
+            "waktu_preferensi": [["Senin", 9], ["Senin", 10], ["Rabu", 13], ["Kamis", 14], ["Jumat", 15]]
         },
         {
             "nama": "Ir. Brian Ricardo Tamin, S.Kom.",
