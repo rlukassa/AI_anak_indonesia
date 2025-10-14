@@ -15,4 +15,5 @@ class OutputConfigService:
     
     @staticmethod
     def showSaveSuccess(filename: str):
-        print(f"\nHasil berhasil disimpan dengan nama: {filename}_*.txt")
+        print(f"\n Proses penyimpanan selesai!")
+        print(f"Semua file tersimpan di folder 'results/' dengan prefix: {filename}")

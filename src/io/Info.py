@@ -30,22 +30,22 @@ class Info:
             totalWidth = maxKeyLength + maxValueLength + 7  # " : " + padding
             totalWidth = min(max(totalWidth, 40), 80)  # Min 40, max 80 chars
             
-            # Header box
-            result += "╔" + "═" * totalWidth + "╗\n"
-            result += "║" + " INFORMASI OPTIMASI ".center(totalWidth) + "║\n"
-            result += "╚" + "═" * totalWidth + "╝\n\n"
+            # Header box dengan karakter ASCII
+            result += "+" + "=" * totalWidth + "+\n"
+            result += "|" + " INFORMASI OPTIMASI ".center(totalWidth) + "|\n"
+            result += "+" + "=" * totalWidth + "+\n\n"
             
-            # Content box  
-            result += "┌" + "─" * totalWidth + "┐\n"
-            result += "│" + " PARAMETER & HASIL ".center(totalWidth) + "│\n"
-            result += "├" + "─" * totalWidth + "┤\n"
+            # Content box dengan karakter ASCII
+            result += "+" + "-" * totalWidth + "+\n"
+            result += "|" + " PARAMETER & HASIL ".center(totalWidth) + "|\n"
+            result += "+" + "-" * totalWidth + "+\n"
             
             for key, value in self.infos.items():
                 keyStr = str(key)[:maxKeyLength].ljust(maxKeyLength)
                 valueStr = str(value)[:maxValueLength].rjust(maxValueLength)
-                result += f"│  {keyStr} : {valueStr}  │\n"
+                result += f"|  {keyStr} : {valueStr}  |\n"
             
-            result += "└" + "─" * totalWidth + "┘\n\n"
+            result += "+" + "-" * totalWidth + "+\n\n"
         
         # Render sections jika ada
         for title, content in self.sections:
@@ -54,20 +54,20 @@ class Info:
             boxWidth = max(40, len(title) + 4, maxContentLength + 4)
             boxWidth = min(boxWidth, 80)
             
-            # Header
-            result += "╔" + "═" * boxWidth + "╗\n"
-            result += "║" + " INFORMASI OPTIMASI ".center(boxWidth) + "║\n"
-            result += "╚" + "═" * boxWidth + "╝\n\n"
+            # Header dengan karakter ASCII
+            result += "+" + "=" * boxWidth + "+\n"
+            result += "|" + " DETAIL INFORMASI ".center(boxWidth) + "|\n"
+            result += "+" + "=" * boxWidth + "+\n\n"
             
-            # Content
-            result += "┌" + "─" * boxWidth + "┐\n"
-            result += "│" + f" {title} ".center(boxWidth) + "│\n"
-            result += "├" + "─" * boxWidth + "┤\n"
+            # Content dengan karakter ASCII
+            result += "+" + "-" * boxWidth + "+\n"
+            result += "|" + f" {title} ".center(boxWidth) + "|\n"
+            result += "+" + "-" * boxWidth + "+\n"
             
             for line in lines:
-                paddedLine = f" {line} ".ljust(boxWidth + 0)
-                result += f"│{paddedLine}│\n"
+                paddedLine = f" {line} ".ljust(boxWidth)
+                result += f"|{paddedLine}|\n"
             
-            result += "└" + "─" * boxWidth + "┘\n\n"
+            result += "+" + "-" * boxWidth + "+\n\n"
         
         return result

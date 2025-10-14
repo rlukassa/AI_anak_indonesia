@@ -66,6 +66,7 @@ def main():  # fungsi utama program sebagai driver
     
     if OutputConfigService.askSaveOption():  # tanya save option
         filename = OutputConfigService.generateFilename(algorithmName)  # generate nama file
-        print(f"Fitur save akan ditambahkan nanti dengan nama: {filename}")  # placeholder
+        # Implementasi save yang sebenarnya
+        OutputService.saveResults(finalState, algorithmName, config, algorithmStats, filename)
 
 

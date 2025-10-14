@@ -36,10 +36,11 @@ class SA(LocalSearch):
             successor = currState.generate_random_successor(*objectives) # cari successor (random)
             _deltaE = successor.state_value - currState.state_value # hitung delta E = E_successor - E_curr 
 
-            probabability = self._acceptance_probability(_deltaE, currT)
             if _deltaE > 0:  # Successor lebih baik
+                probabability = 1.0  # Selalu diterima (100%)
                 currState = successor # langsung pindah ke successor
             else:  # Successor lebih buruk, terima dengan probabilitas tertentu
+                probabability = self._acceptance_probability(_deltaE, currT)
                 _accept = random.uniform(0, 1) # random float antara 0 dan 1
                 stuck_freq += 1
                 if _accept < probabability: # kalo _deltaE nya ada 
@@ -100,9 +101,15 @@ class SA(LocalSearch):
         return currState, stats
     
     def _acceptance_probability(self, _deltaE: float, temperature: float) -> float:
-        # formula Boltzmann, ya kek umumnya lah
-        # # Bad move, hitung probabilitas berdasarkan Boltzmann distribution
-        return math.exp(_deltaE / temperature)  # e^(_deltaE/T)
+        # CEK INI BROOOO 
+        # baru ngecek 
+        if temperature <= 0:
+            return 0.0 
+        
+        # Untuk _deltaE < 0, exp(_deltaE/T) memberikan probabilitas 0-1
+        # Semakin besar |_deltaE| (semakin buruk), semakin kecil probabilitas
+        # Semakin tinggi temperature, semakin besar probabilitas
+        return math.exp(_deltaE / temperature)
         
     def setInitialTemperature(self, initialT: float):
         self.initialT = initialT
