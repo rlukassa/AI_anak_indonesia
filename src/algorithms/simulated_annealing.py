@@ -21,6 +21,7 @@ class SA(LocalSearch):
         
         initial_state_value = currState.state_value
         iterations = 0
+        stuck_freq = 0
 
         # Plotting Hasil
         all_state_values = [initial_state_value]
@@ -40,6 +41,7 @@ class SA(LocalSearch):
                 currState = successor # langsung pindah ke successor
             else:  # Successor lebih buruk, terima dengan probabilitas tertentu
                 _accept = random.uniform(0, 1) # random float antara 0 dan 1
+                stuck_freq += 1
                 if _accept < probabability: # kalo _deltaE nya ada 
                     currState = successor
             
@@ -89,6 +91,7 @@ class SA(LocalSearch):
             'stop_temp': self.stopT,
             'execution_time': execution_time,
             'iterations': iterations,
+            'stuck_freq': stuck_freq,
             'initial_state_value': initial_state_value,
             'final_state_value': currState.state_value,
             'plot_graph': plotting_hasil
