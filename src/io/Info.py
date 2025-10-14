@@ -43,7 +43,7 @@ class Info:
             for key, value in self.infos.items():
                 keyStr = str(key)[:maxKeyLength].ljust(maxKeyLength)
                 valueStr = str(value)[:maxValueLength].rjust(maxValueLength)
-                result += f"│ {keyStr} : {valueStr} │\n"
+                result += f"│  {keyStr} : {valueStr}  │\n"
             
             result += "└" + "─" * totalWidth + "┘\n\n"
         
@@ -65,7 +65,7 @@ class Info:
             result += "├" + "─" * boxWidth + "┤\n"
             
             for line in lines:
-                paddedLine = f" {line} ".ljust(boxWidth + 1)
+                paddedLine = f" {line} ".ljust(boxWidth + 0)
                 result += f"│{paddedLine}│\n"
             
             result += "└" + "─" * boxWidth + "┘\n\n"

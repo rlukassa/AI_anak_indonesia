@@ -70,10 +70,12 @@ class GeneticAlgorithm(LocalSearch):
         # 1. Inisialisasi Parent
         # print("\n[*] Inisialisasi Parent")
         selected_parent:List[State] = self._initialize_parent(*objectives)
+        max_state_value = [max([s.state_value for s in selected_parent])]
+        avg_state_value = [sum([s.state_value for s in selected_parent])/self.jml_parent]
+        iterasi = [0]
         
         min_state_value = min([s.state_value for s in selected_parent])
         best_state = [s for s in selected_parent if s.state_value == max([s.state_value for s in selected_parent])][0]
-        total_state_value = 0; total_iterasi = 0
         found = False
         for i in range(self.jml_iterasi):
             # print(f"\n========== Iterasi {i} ==========")
@@ -121,28 +123,45 @@ class GeneticAlgorithm(LocalSearch):
                 selected_parent[j]  = good_state1
                 selected_parent[j+1]= good_state2
 
-                total_state_value += (good_state1.state_value + good_state2.state_value)
-
                 if good_state1.state_value == 0 or good_state2.state_value == 0: 
                     found = True; break
 
             # 5. Evaluasi min_state_value
             min_state_value = min(min_state_value, min([s.state_value for s in selected_parent]))
                 
-            # Update Info
-            total_iterasi += 1
+            # Plot Hasil
+            max_state_value.append(max([s.state_value for s in selected_parent]))
+            avg_state_value.append(sum([s.state_value for s in selected_parent])/self.jml_parent)
+            iterasi.append(iterasi[-1]+1)
 
             if found: break
         
         end_time = time.time()
         execution_time = end_time - start_time
 
+        # Plotting Hasil
+        plotting_hasil = {
+            'Maximum State Values': {
+                'x_label': 'Iterasi',
+                'y_label': 'State Value',
+                'x_data': iterasi,
+                'y_data': max_state_value
+            },
+            'Average State Values': {
+                'x_label': 'Iterasi',
+                'y_label': 'State Value',
+                'x_data': iterasi,
+                'y_data': avg_state_value
+            }
+        }
+
         stats = {
             'algorithm_name': 'Genetic Algorithm',
-            'iterations': total_iterasi,
-            'avg_state_value': (total_state_value / (total_iterasi*self.jml_parent)),
+            'iterations': iterasi[-1],
+            'initial_state_value': max_state_value[0],
             'final_state_value': best_state.state_value,
-            'execution_time': execution_time
+            'execution_time': execution_time,
+            'plot_graph': plotting_hasil
         }
         print("========== Done ==========\n")
         return best_state, stats

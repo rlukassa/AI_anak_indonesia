@@ -21,6 +21,11 @@ class SA(LocalSearch):
         
         initial_state_value = currState.state_value
         iterations = 0
+
+        # Plotting Hasil
+        all_state_values = [initial_state_value]
+        all_probabilities = [1]
+        iterasi = [iterations]
         
         print(f"Memulai Simulated Annealing...")
         print(f"   Initial Temperature: {self.initialT}")
@@ -30,16 +35,22 @@ class SA(LocalSearch):
             successor = currState.generate_random_successor(*objectives) # cari successor (random)
             _deltaE = successor.state_value - currState.state_value # hitung delta E = E_successor - E_curr 
 
+            probabability = self._acceptance_probability(_deltaE, currT)
             if _deltaE > 0:  # Successor lebih baik
                 currState = successor # langsung pindah ke successor
             else:  # Successor lebih buruk, terima dengan probabilitas tertentu
                 _accept = random.uniform(0, 1) # random float antara 0 dan 1
-                if _accept < self._acceptance_probability(_deltaE, currT): # kalo _deltaE nya ada 
+                if _accept < probabability: # kalo _deltaE nya ada 
                     currState = successor
             
             # Turunkan temperature
             currT *= self.coolingRate
             iterations += 1
+
+            # Update Plotting Hasil
+            all_state_values.append(currState.state_value)
+            all_probabilities.append(probabability)
+            iterasi.append(iterations)
             
             # Progress indicator setiap 100 iterasi
             if iterations % 100 == 0:
@@ -54,6 +65,22 @@ class SA(LocalSearch):
         print(f"   Total Iterasi: {iterations:,}")
         print(f"   Waktu Eksekusi: {execution_time:.3f} detik")
         
+        # Plotting Hasil
+        plotting_hasil = {
+            'State Value': {
+                'x_label': 'Iterasi',
+                'y_label': 'State Value',
+                'x_data': iterasi,
+                'y_data': all_state_values
+            },
+            'Acceptance Probability': {
+                'x_label': 'Iterasi',
+                'y_label': 'Acceptance Probability',
+                'x_data': iterasi,
+                'y_data': all_probabilities
+            }
+        }
+
         # Return state dan statistik
         stats = {
             'algorithm_name': 'Simulated Annealing',
@@ -63,7 +90,8 @@ class SA(LocalSearch):
             'execution_time': execution_time,
             'iterations': iterations,
             'initial_state_value': initial_state_value,
-            'final_state_value': currState.state_value
+            'final_state_value': currState.state_value,
+            'plot_graph': plotting_hasil
         }
         
         return currState, stats

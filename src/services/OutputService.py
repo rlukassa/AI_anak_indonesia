@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 from typing import Dict, List, Any, Optional
 from src.model.state import State
 from ..io.Table import Table
@@ -42,9 +43,6 @@ class OutputService:
         if 'initial_state_value' in executionStats and 'final_state_value' in executionStats:
             improvement = executionStats['final_state_value'] - executionStats['initial_state_value']
             info.addInfo("Peningkatan", f"{improvement:+.2f}")
-        
-        if 'avg_state_value' in executionStats:
-            info.addInfo("Rata-Rata State Value", f"{executionStats['avg_state_value']:.2f}")
 
         return info
     
@@ -58,18 +56,13 @@ class OutputService:
         totalRooms = len(state.repo.ruangan) 
         totalAssignments = len(state.assignments)
         
-        # Analisis konflik
-        conflicts = 0
-        for waktu, mataKuliahList in state.times_to_mk.items():
-            if len(mataKuliahList) > 1:
-                conflicts += len(mataKuliahList) - 1
-        
-        analysisContent = f"""Total Mata Kuliah: {totalCourses}
-                            Total Ruangan: {totalRooms}
-                            Total Assignment: {totalAssignments}
-                            Konflik Terdeteksi: {conflicts}
-                            Kualitas Jadwal: {'Baik' if state.state_value > -10 else 'Perlu Perbaikan'}
-                            Utilisasi Slot: {(totalAssignments / (totalRooms * 55)) * 100:.1f}%"""
+        analysisContent = (
+            f"Total Mata Kuliah: {totalCourses}\n"
+            f"Total Ruangan: {totalRooms}\n"
+            f"Total Assignment: {totalAssignments}\n"
+            f"Kualitas Jadwal: {'Baik' if state.state_value > -10 else 'Perlu Perbaikan'}\n"
+            f"Utilisasi Slot: {(totalAssignments / (totalRooms * 55)) * 100:.1f}%"
+        )
         
         info.addSection("ANALISIS JADWAL", analysisContent)
         
@@ -120,6 +113,66 @@ class OutputService:
         return tablesByRoom
     
     @staticmethod
+    def generateGraph(algorithmName: str, executionStats: Dict[str, Any]) -> None:
+        """
+        Menggenerasi dan menampilkan grafik dari data yang ada di executionStats.
+        
+        Data grafik diharapkan berada di bawah key 'plot_graph' dengan format:
+        Dict[str, Dict[str, List[float]]]
+        
+        Contoh:
+        {
+            'state_value': {
+                'x_label': 'Iterasi',
+                'y_label': 'Nilai State',
+                'x_data': [1.0, 2.0, 3.0, 4.0, 5.0],
+                'y_data': [10.0, 8.0, 6.0, 7.0, 5.0]
+            },
+            'temperature_value': {
+                'x_label': 'Iterasi',
+                'y_label': 'Nilai Temperatur',
+                'x_data': [1.0, 2.0, 3.0, 4.0, 5.0],
+                'y_data': [100.0, 80.0, 60.0, 40.0, 20.0]
+            }
+        }
+        """
+        if 'plot_graph' not in executionStats:
+            print("\nTidak ada data grafik yang tersedia.")
+            return
+
+        plot_data = executionStats['plot_graph']
+        grouped_plots = {}
+
+        # Mengelompokkan data berdasarkan x_label dan y_label
+        for line_label, data_dict in plot_data.items():
+            x_label = data_dict.get('x_label', 'X-Axis')
+            y_label = data_dict.get('y_label', 'Y-Axis')
+            plot_key = (x_label, y_label)
+
+            if plot_key not in grouped_plots:
+                grouped_plots[plot_key] = []
+            
+            grouped_plots[plot_key].append({
+                'label': line_label,
+                'x_data': data_dict.get('x_data', []),
+                'y_data': data_dict.get('y_data', [])
+            })
+
+        # Menggenerasi dan menampilkan grafik untuk setiap grup
+        for (x_label, y_label), lines in grouped_plots.items():
+            plt.figure(figsize=(10, 6))
+            
+            for line in lines:
+                plt.plot(line['x_data'], line['y_data'], label=line['label'])
+            
+            plt.title(f'{algorithmName} - {y_label} vs {x_label}')
+            plt.xlabel(x_label)
+            plt.ylabel(y_label)
+            plt.legend()
+            plt.grid(True)
+            plt.show()
+
+    @staticmethod
     def displayResults(state: State, algorithmName: str, parameters: Dict[str, Any], 
                       executionStats: Dict[str, Any]) -> None:
         """Display semua hasil optimasi"""
@@ -144,6 +197,9 @@ class OutputService:
         else:
             print("\nTidak ada jadwal yang dapat ditampilkan.")
             print("State mungkin kosong atau tidak ada assignment.")
+
+        # Generate Graph
+        OutputService.generateGraph(algorithmName, executionStats)
     
     @staticmethod # (1.) Ini cuman nampilin pesan doang
     # langsung ke Settings.getValidFilePath (2.) --> tapi itu buat cek validPathnya aja si
