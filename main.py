@@ -21,12 +21,26 @@ def main():  # fungsi utama program sebagai driver
     OutputService.showWelcome()  
     filePath = UserInterfaceService.getValidFilePath()
     repository = Repository.create_repo(filePath) # yang ubah ke object itu
-    selectedAlgorithm = UserInterfaceService.selectAlgorithm()  # service untuk pilih algoritma
     initialState = State()  # buat state kosong
     initialState.initialize_domain(repository)  # inisialisasi dengan data repository
-    # objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang, kasus_dosen_gabisa, kasus_dosen_bentrok)
-    objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang)
+    objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang, kasus_dosen_gabisa, kasus_dosen_bentrok)
+    # objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang)
     initialState.initialize_random_state(*objectiveFunctions)  # buat assignment awal
+    
+    # Generate dan display tables
+    tables = OutputService.generateScheduleTables(initialState)
+    
+    if tables:
+        for roomCode, table in tables.items():
+            print(f"\nJADWAL RUANGAN: {roomCode}")
+            print("=" * 80)
+            table.display()
+            print("*Kolom jam di output merupakan jam mulai")
+    else:
+        print("\nTidak ada jadwal yang dapat ditampilkan.")
+        print("State mungkin kosong atau tidak ada assignment.")
+
+    selectedAlgorithm = UserInterfaceService.selectAlgorithm()  # service untuk pilih algoritma
     OutputService.showOptimizationStart()  # pesan mulai 
 
     # // Buat HC

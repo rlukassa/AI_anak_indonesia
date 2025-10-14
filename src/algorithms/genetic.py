@@ -158,7 +158,7 @@ class GeneticAlgorithm(LocalSearch):
         stats = {
             'algorithm_name': 'Genetic Algorithm',
             'iterations': iterasi[-1],
-            'initial_state_value': max_state_value[0],
+            'initial_state_value': state.state_value,
             'final_state_value': best_state.state_value,
             'execution_time': execution_time,
             'plot_graph': plotting_hasil

@@ -43,7 +43,6 @@ class HillClimbing(LocalSearch):
     def _steepest(self, state: State, *objectives) -> Tuple[State, Dict[str, Any]]: 
         """ steepest ascent hill-climbing  """
         current = state.copy()
-        current.initialize_random_state(*objectives)
         initial_state_value = current.state_value
         
         # Plot Hasil
@@ -91,7 +90,6 @@ class HillClimbing(LocalSearch):
             return frozenset(s.assignments.items())
         
         current = state.copy()
-        current.initialize_random_state(*objectives)
         initial_state_value = current.state_value
 
         visited = {_keys(current)}
@@ -159,7 +157,6 @@ class HillClimbing(LocalSearch):
     def _stochastic(self, state: State, iterations: int, *objectives) -> Tuple[State, Dict[str, Any]]: 
         """ stochastic hill-climbing """
         current = state.copy()
-        current.initialize_random_state(*objectives)
         initial_state_value = current.state_value
         
         # Plot Hasil
