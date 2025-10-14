@@ -34,6 +34,8 @@ class Info:
             result += "+" + "=" * totalWidth + "+\n"
             result += "|" + " INFORMASI OPTIMASI ".center(totalWidth) + "|\n"
             result += "+" + "=" * totalWidth + "+\n\n"
+
+            
             
             # Content box dengan karakter ASCII
             result += "+" + "-" * totalWidth + "+\n"

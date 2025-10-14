@@ -58,15 +58,16 @@ def main():  # fungsi utama program sebagai driver
     # harusnya udah keluar tabelnya kalo bener 
 
     
+    
     # HEADER OUTPUT    
     OutputService.showResultHeader()  # tampilkan header hasil yang HASIL OPTIMASI
     
     # display semua hasil optimasi
-    OutputService.displayResults(finalState, algorithmName, config, algorithmStats)  # display lengkap dari informasi optimasi sampe tabel dan info
+    OutputService.displayResults(finalState, algorithmName, config, algorithmStats, initialState)  # display lengkap dari informasi optimasi sampe tabel dan info
     
     if OutputConfigService.askSaveOption():  # tanya save option
         filename = OutputConfigService.generateFilename(algorithmName)  # generate nama file
         # Implementasi save yang sebenarnya
-        OutputService.saveResults(finalState, algorithmName, config, algorithmStats, filename)
+        OutputService.saveResults(finalState, algorithmName, config, algorithmStats, filename, initialState)
 
 
