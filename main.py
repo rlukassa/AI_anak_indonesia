@@ -35,7 +35,7 @@ def main():  # fungsi utama program sebagai driver
 
         # driver algo       
         finalState, algorithmStats = AlgorithmExecutionService.runHillClimbing(initialState, config)  # eksekusi HC
-        algorithmName = f"Hill Climbing ({config['variant']})"  # nama dengan variant kek HC Random Restart 
+        algorithmName = f"Hill Climbing"  # nama dengan variant kek HC Random Restart 
     
     # // BUAT SA
     elif selectedAlgorithm == "SA":  # jika pilih Simulated Annealing

@@ -19,9 +19,12 @@ class OutputService:
         
         elif "Hill Climbing" in algorithmName:
             info.addInfo("Variant", parameters.get('variant', 'steepest'))
-            info.addInfo("Max Iterations", f"{parameters.get('maxIterations', 0):,}")
-            if parameters.get('restarts', 1) > 1:
-                info.addInfo("Restarts", f"{parameters.get('restarts', 1)}")
+            if parameters.get('max_sideways') is not None:
+                info.addInfo("Max Sideways", parameters.get('max_sideways'))
+            if parameters.get('max_iteration') is not None:
+                info.addInfo("Max Iteration", parameters.get('max_iteration'))
+            if parameters.get('max_restart') is not None:
+                info.addInfo("Max Restart", parameters.get('max_restart'))
         
         elif algorithmName == "Genetic Algorithm":
             info.addInfo("Population Size", f"{parameters.get('populationSize', 0):,}")
@@ -43,6 +46,11 @@ class OutputService:
         if 'initial_state_value' in executionStats and 'final_state_value' in executionStats:
             improvement = executionStats['final_state_value'] - executionStats['initial_state_value']
             info.addInfo("Peningkatan", f"{improvement:+.2f}")
+
+        if 'restarts' in executionStats and 'iter_restart' in executionStats:
+            info.addInfo("Jumlah Restart", f"{executionStats['restarts']}")
+            for i in range(executionStats['restarts']):
+                info.addInfo(f"Iterasi Restart ke-{i}", f"{executionStats['iter_restart'][i]}")
 
         return info
     

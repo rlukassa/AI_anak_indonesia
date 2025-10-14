@@ -22,9 +22,10 @@ class AlgorithmExecutionService:
         
         # buat instance algoritma hill climbing
         hillClimbingAlgorithm = HillClimbing(
-            config['variant'],        # variant yang dipilih user
-            config['maxIterations'],  # maksimum iterasi
-            config['restarts']        # jumlah restart jika ada
+            config['variant'],
+            config['max_sideways'],
+            config['max_iteration'],
+            config['max_restart']
         )
         
         # jalankan algoritma dan return hasil

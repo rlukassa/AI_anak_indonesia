@@ -10,45 +10,57 @@ class AlgorithmConfigService:
     # nah implement dibawhanya
     @staticmethod
     def configureHillClimbing() -> Dict[str, Any]: # config parameter HC
-        pass
-        # TODO :
-        # print("\n" + "="*50)
-        # print("KONFIGURASI HILL CLIMBING")
-        # print("="*50)
+        print("\n" + "="*50)
+        print("KONFIGURASI HILL CLIMBING")
+        print("="*50)
         
-        # print("Pilih variant Hill Climbing:")
-        # print("1. Steepest Ascent")
-        # print("2. Sideways Move")
-        # print("3. Stochastic")
-        # print("4. Random Restart")
+        print("Pilih variant Hill Climbing:")
+        print("1. Steepest Ascent")
+        print("2. Sideways Move")
+        print("3. Stochastic")
+        print("4. Random Restart")
         
-        # variant_choice = input("Masukkan pilihan (1-4): ")
+        while True:
+            variant_choice = input("Masukkan pilihan (1-4): ")
+            if variant_choice in ["1", "2", "3", "4"]:
+                break
         
-        # variant_map = {
-        #     "1": "steepest",
-        #     "2": "sideways",
-        #     "3": "stochastic",
-        #     "4": "random_restart"
-        # }
+        variant_map = {
+            "1": "steepest",
+            "2": "sideways",
+            "3": "stochastic",
+            "4": "random_restart"
+        }
         
-        # variant = variant_map.get(variant_choice, "steepest")
-        # max_iterations = int(input("Maksimum iterasi (rekomendasi 1000): "))
-        # restarts = 1
+        variant = variant_map.get(variant_choice, "steepest")
+        config = {
+            'variant': variant,
+            'max_sideways': None,
+            'max_iteration': None,
+            'max_restart': None
+        }
+        if variant == "sideways":
+            max_sideways = int(input("Maksimum sideway: "))
+            config['max_sideways'] = max_sideways
         
-        # if variant == "random_restart":
-        #     restarts = int(input("Jumlah restart (rekomendasi 10): "))
+        if variant == "stochastic":
+            max_iteration = int(input("Maksimum Iterasi: "))
+            config['max_iteration'] = max_iteration
+
+        if variant == "random_restart":
+            max_restart = int(input("Maksimum restart: "))
+            config['max_restart'] = max_restart
         
-        # print(f"\nParameter Hill Climbing:")
-        # print(f"   Variant: {variant}")
-        # print(f"   Max Iterations: {max_iterations}")
-        # if variant == "random_restart":
-        #     print(f"   Restarts: {restarts}")
+        print(f"\nParameter Hill Climbing:")
+        print(f"   Variant: {variant}")
+        if variant == "sideways":
+            print(f"   Max Sideways: {max_sideways}")
+        if variant == "stochastic":
+            print(f"   Max Iteration: {max_iteration}")
+        if variant == "random_restart":
+            print(f"   Max Restarts: {max_restart}")
         
-        # return {
-        #     'variant': variant,
-        #     'maxIterations': max_iterations,
-        #     'restarts': restarts
-        # }
+        return config
     
     @staticmethod
     # Simulated Annealing, inimah udah w
