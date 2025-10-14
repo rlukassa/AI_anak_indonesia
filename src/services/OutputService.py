@@ -81,6 +81,8 @@ class OutputService:
         
         return info
     
+
+    
     @staticmethod
     def generateScheduleTables(state: State) -> Dict[str, Table]:
         """Generate tabel jadwal per ruangan"""
@@ -127,28 +129,6 @@ class OutputService:
     
     @staticmethod
     def generateGraph(algorithmName: str, executionStats: Dict[str, Any]) -> None:
-        """
-        Menggenerasi dan menampilkan grafik dari data yang ada di executionStats.
-        
-        Data grafik diharapkan berada di bawah key 'plot_graph' dengan format:
-        Dict[str, Dict[str, List[float]]]
-        
-        Contoh:
-        {
-            'state_value': {
-                'x_label': 'Iterasi',
-                'y_label': 'Nilai State',
-                'x_data': [1.0, 2.0, 3.0, 4.0, 5.0],
-                'y_data': [10.0, 8.0, 6.0, 7.0, 5.0]
-            },
-            'temperature_value': {
-                'x_label': 'Iterasi',
-                'y_label': 'Nilai Temperatur',
-                'x_data': [1.0, 2.0, 3.0, 4.0, 5.0],
-                'y_data': [100.0, 80.0, 60.0, 40.0, 20.0]
-            }
-        }
-        """
         if 'plot_graph' not in executionStats:
             print("\nTidak ada data grafik yang tersedia.")
             return
@@ -187,23 +167,41 @@ class OutputService:
 
     @staticmethod
     def displayResults(state: State, algorithmName: str, parameters: Dict[str, Any], 
-                      executionStats: Dict[str, Any]) -> None:
+                      executionStats: Dict[str, Any], initialState: State = None) -> None:
         """Display semua hasil optimasi"""
         
         # Generate dan display algorithm info
         algorithmInfo = OutputService.generateAlgorithmInfo(algorithmName, parameters, executionStats)
         algorithmInfo.display()
         
+        # Generate dan display initial state schedule tables (jadwal state awal)
+        if initialState:
+            print(f"\nJADWAL INITIAL STATE")
+            print("=" * 80)
+            initialTables = OutputService.generateScheduleTables(initialState)
+            
+            if initialTables:
+                for roomCode, table in initialTables.items():
+                    print(f"\nJADWAL RUANGAN (INITIAL): {roomCode}")
+                    print("=" * 80)
+                    table.display()
+                    print("*Kolom jam di output merupakan jam mulai")
+            else:
+                print("Tidak ada jadwal awal yang dapat ditampilkan.")
+                print("Initial state mungkin kosong atau tidak ada assignment.")
+        
         # Generate dan display schedule analysis
         scheduleAnalysis = OutputService.generateScheduleAnalysis(state)
         scheduleAnalysis.display()
         
-        # Generate dan display tables
+        # Generate dan display final state tables (jadwal hasil optimasi)
+        print(f"\nJADWAL HASIL OPTIMASI")
+        print("=" * 80)
         tables = OutputService.generateScheduleTables(state)
         
         if tables:
             for roomCode, table in tables.items():
-                print(f"\nJADWAL RUANGAN: {roomCode}")
+                print(f"\nJADWAL RUANGAN (FINAL): {roomCode}")
                 print("=" * 80)
                 table.display()
                 print("*Kolom jam di output merupakan jam mulai")
@@ -237,7 +235,7 @@ class OutputService:
     
     @staticmethod
     def saveResults(state: State, algorithmName: str, parameters: Dict[str, Any], 
-                   executionStats: Dict[str, Any], filename: str) -> None:
+                   executionStats: Dict[str, Any], filename: str, initialState: State = None) -> None:
         """Save hasil optimasi ke file dan save plot jika ada"""
         import os
         from datetime import datetime
@@ -276,14 +274,30 @@ class OutputService:
                 f.write(f"Pelanggaran Dosen   : {state.constraint_violations.get('lecturer_conflict', 0)}\n")
             f.write("\n")
             
-            # Schedule tables
+            # Initial state tables
+            if initialState:
+                f.write("JADWAL STATE AWAL\n")
+                f.write("=" * 40 + "\n")
+                initialTables = OutputService.generateScheduleTables(initialState)
+                
+                if initialTables:
+                    for roomCode, table in initialTables.items():
+                        f.write(f"\nJADWAL RUANGAN (AWAL): {roomCode}\n")
+                        f.write("-" * 80 + "\n")
+                        f.write(OutputService._tableToString(table))
+                        f.write("\n*Kolom jam di output merupakan jam mulai\n")
+                else:
+                    f.write("Tidak ada jadwal awal yang dapat ditampilkan.\n")
+                f.write("\n")
+            
+            # Final state tables
             f.write("JADWAL HASIL OPTIMASI\n")
             f.write("=" * 40 + "\n")
             tables = OutputService.generateScheduleTables(state)
             
             if tables:
                 for roomCode, table in tables.items():
-                    f.write(f"\nJADWAL RUANGAN: {roomCode}\n")
+                    f.write(f"\nJADWAL RUANGAN (FINAL): {roomCode}\n")
                     f.write("-" * 80 + "\n")
                     # Convert table to string format
                     f.write(OutputService._tableToString(table))
