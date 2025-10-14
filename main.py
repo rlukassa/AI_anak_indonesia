@@ -1,4 +1,3 @@
-from os import system, name
 import src.io.repo_loader as Repository  # import modul repository loader
 from src.model.state import State  # import class state untuk jadwal
 from src.services.OutputService import OutputService  # import unified output service
@@ -14,10 +13,7 @@ from src.eval.evaluator import (  # import objective functions
 )
 
 def main():  # fungsi utama program sebagai driver
-    if name == 'nt':
-        _ = system('cls')
-    else:
-        _ = system('clear')
+    OutputService.clearTerminal()
     OutputService.showWelcome()  
     filePath = UserInterfaceService.getValidFilePath()
     repository = Repository.create_repo(filePath) # yang ubah ke object itu
@@ -26,22 +22,8 @@ def main():  # fungsi utama program sebagai driver
     objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang, kasus_dosen_gabisa, kasus_dosen_bentrok)
     # objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang)
     initialState.initialize_random_state(*objectiveFunctions)  # buat assignment awal
-    
-    # Generate dan display tables
-    tables = OutputService.generateScheduleTables(initialState)
-    
-    if tables:
-        for roomCode, table in tables.items():
-            print(f"\nJADWAL RUANGAN: {roomCode}")
-            print("=" * 80)
-            table.display()
-            print("*Kolom jam di output merupakan jam mulai")
-    else:
-        print("\nTidak ada jadwal yang dapat ditampilkan.")
-        print("State mungkin kosong atau tidak ada assignment.")
-
     selectedAlgorithm = UserInterfaceService.selectAlgorithm()  # service untuk pilih algoritma
-    OutputService.showOptimizationStart()  # pesan mulai 
+    OutputService.clearTerminal()
 
     # // Buat HC
     if selectedAlgorithm == "HC":  # pilih Hill Climbing

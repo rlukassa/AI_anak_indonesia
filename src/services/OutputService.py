@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import os
+from os import system, name
 from datetime import datetime
 from typing import Dict, List, Any, Optional
 from src.model.state import State
@@ -232,6 +232,13 @@ class OutputService:
         print("\n" + "="*80)
         print("HASIL OPTIMASI PENJADWALAN KULIAH")
         print("="*80)
+
+    @staticmethod
+    def clearTerminal() -> None:
+        if name == 'nt':
+            _ = system('cls')
+        else:
+            _ = system('clear')
     
     @staticmethod
     def saveResults(state: State, algorithmName: str, parameters: Dict[str, Any], 
