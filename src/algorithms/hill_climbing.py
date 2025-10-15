@@ -15,8 +15,6 @@ class HillClimbing(LocalSearch):
         self.max_restart = mr
          
     def search(self, state: State, *objectives) -> Tuple[State, Dict[str, Any]]: 
-        """ entry point search function """
-
         final_state:State
         execStats:Dict[str, Any]
 
@@ -43,25 +41,25 @@ class HillClimbing(LocalSearch):
     def _steepest(self, state: State, *objectives) -> Tuple[State, Dict[str, Any]]: 
         """ steepest ascent hill-climbing  """
         current = state.copy()
-        current.initialize_random_state(*objectives)
-        initial_state_value = current.state_value
+        current.initializeRandomSuccessor(*objectives)
+        initial_stateValue = current.stateValue
         
         # Plot Hasil
-        state_values = [current.state_value]
+        stateValues = [current.stateValue]
         iters = [0]
 
         while True:
             # generate successors
-            successors = current.generate_all_successors(*objectives)
+            successors = current.generateAllSuccessors(*objectives)
             if not successors: 
                 break
             
             # compare value
-            best_successor = max(successors, key=lambda s: s.state_value)
-            state_values.append(best_successor.state_value)
+            best_successor = max(successors, key=lambda s: s.stateValue)
+            stateValues.append(best_successor.stateValue)
             iters.append(iters[-1]+1)
             
-            if best_successor.state_value <= current.state_value: 
+            if best_successor.stateValue <= current.stateValue: 
                 break
             current = best_successor
 
@@ -71,14 +69,14 @@ class HillClimbing(LocalSearch):
                 'x_label': 'Iterasi',
                 'y_label': 'State Value',
                 'x_data': iters,
-                'y_data': state_values
+                'y_data': stateValues
             }
         }
 
         stats = {
             'iterations': iters[-1],
-            'initial_state_value': initial_state_value,
-            'final_state_value': current.state_value,
+            'initial_stateValue': initial_stateValue,
+            'final_stateValue': current.stateValue,
             'plot_graph': plotting_hasil
         }
 
@@ -91,33 +89,33 @@ class HillClimbing(LocalSearch):
             return frozenset(s.assignments.items())
         
         current = state.copy()
-        current.initialize_random_state(*objectives)
-        initial_state_value = current.state_value
+        current.initializeRandomSuccessor(*objectives)
+        initial_stateValue = current.stateValue
 
         visited = {_keys(current)}
         sideways = 0
         
         # Plot Hasil
-        state_values = [current.state_value]
+        stateValues = [current.stateValue]
         iters = [0]
 
         while True:
             # generate successors
-            successors = current.generate_all_successors(*objectives)
+            successors = current.generateAllSuccessors(*objectives)
             if not successors:
                 break
 
-            current_value = current.state_value
-            best_value = max(s.state_value for s in successors)
+            current_value = current.stateValue
+            best_value = max(s.stateValue for s in successors)
 
             # better value
             if best_value > current_value:
-                better_states = [s for s in successors if s.state_value == best_value]
+                better_states = [s for s in successors if s.stateValue == best_value]
                 current = random.choice(better_states)
                 visited.add(_keys(current))
                 sideways = 0
 
-                state_values.append(current.state_value)
+                stateValues.append(current.stateValue)
                 iters.append(iters[-1]+1)
                 continue
 
@@ -125,14 +123,14 @@ class HillClimbing(LocalSearch):
             if best_value == current_value and sideways < MAX_SIDEWAYS:
                 equal_unvisited = [
                     s for s in successors
-                    if s.state_value == current_value and _keys(s) not in visited
+                    if s.stateValue == current_value and _keys(s) not in visited
                 ]
                 if equal_unvisited:
                     current = random.choice(equal_unvisited)
                     visited.add(_keys(current))
                     sideways += 1
 
-                    state_values.append(current.state_value)
+                    stateValues.append(current.stateValue)
                     iters.append(iters[-1]+1)
                     continue
             break
@@ -143,14 +141,14 @@ class HillClimbing(LocalSearch):
                 'x_label': 'Iterasi',
                 'y_label': 'State Value',
                 'x_data': iters,
-                'y_data': state_values
+                'y_data': stateValues
             }
         }
 
         stats = {
             'iterations': iters[-1],
-            'initial_state_value': initial_state_value,
-            'final_state_value': current.state_value,
+            'initial_stateValue': initial_stateValue,
+            'final_stateValue': current.stateValue,
             'plot_graph': plotting_hasil
         }
 
@@ -159,33 +157,33 @@ class HillClimbing(LocalSearch):
     def _stochastic(self, state: State, iterations: int, *objectives) -> Tuple[State, Dict[str, Any]]: 
         """ stochastic hill-climbing """
         current = state.copy()
-        current.initialize_random_state(*objectives)
-        initial_state_value = current.state_value
+        current.initializeRandomSuccessor(*objectives)
+        initial_stateValue = current.stateValue
         
         # Plot Hasil
-        state_values = [current.state_value]
+        stateValues = [current.stateValue]
         iters = [0]
 
         steps = 0
         while steps < iterations:
             # # Ini Logikanya salah, gw koreksi dikit ye
-            # successors = current.generate_all_successors(*objectives)
+            # successors = current.generateAllSuccessors(*objectives)
             # if not successors:
             #     break
             
-            # better = [s for s in successors if s.state_value > current.state_value]
+            # better = [s for s in successors if s.stateValue > current.stateValue]
             # if not better:
             #     break
             
             # # random dari better states
             # current = random.choice(better)
 
-            successor = current.generate_random_successor(*objectives)
-            better =  successor.state_value > current.state_value
+            successor = current.generateRandomSuccessor(*objectives)
+            better =  successor.stateValue > current.stateValue
             if better:
                 current = successor
 
-            state_values.append(current.state_value)
+            stateValues.append(current.stateValue)
             iters.append(iters[-1]+1)
 
             steps += 1
@@ -196,14 +194,14 @@ class HillClimbing(LocalSearch):
                 'x_label': 'Iterasi',
                 'y_label': 'State Value',
                 'x_data': iters,
-                'y_data': state_values
+                'y_data': stateValues
             }
         }
 
         stats = {
             'iterations': iters[-1],
-            'initial_state_value': initial_state_value,
-            'final_state_value': current.state_value,
+            'initial_stateValue': initial_stateValue,
+            'final_stateValue': current.stateValue,
             'plot_graph': plotting_hasil
         }
 
@@ -214,12 +212,12 @@ class HillClimbing(LocalSearch):
     def _random_restart(self, state: State, restarts:int, *objectives) -> Tuple[State, Dict[str, Any]]: 
         """ random-restart hill-climbing """
         best = None
-        state_values = []
+        stateValues = []
         iters = []
         restart = []
         res_iter = []
         res_val = []
-        initial_state_value = 0
+        initial_stateValue = 0
 
         found = False
         for i in range (restarts):
@@ -228,13 +226,13 @@ class HillClimbing(LocalSearch):
                 break
 
             current = state.copy()
-            current.initialize_random_state(*objectives)
+            current.initializeRandomSuccessor(*objectives)
             
             if i == 0:
                 # Plot Hasil
-                state_values = [current.state_value]
+                stateValues = [current.stateValue]
                 iters = [0]
-                initial_state_value = current.state_value
+                initial_stateValue = current.stateValue
 
             restart.append(i)
             res_iter.append(0)
@@ -243,31 +241,31 @@ class HillClimbing(LocalSearch):
             iterasi = 0
             while True:
                 # generate successors
-                successors = current.generate_all_successors(*objectives)
+                successors = current.generateAllSuccessors(*objectives)
                 if not successors: 
                     break
                 
                 # compare value
-                nxt = max(successors, key=lambda s:s.state_value)
-                if nxt.state_value <= current.state_value:
+                nxt = max(successors, key=lambda s:s.stateValue)
+                if nxt.stateValue <= current.stateValue:
                     res_iter[i] = iterasi
-                    res_val[i] = current.state_value
+                    res_val[i] = current.stateValue
                     iterasi = 0
                     break
                 current = nxt
 
-                state_values.append(current.state_value)
+                stateValues.append(current.stateValue)
                 iters.append(iters[-1]+1)
 
                 iterasi += 1
 
-                if current.state_value == 0:
+                if current.stateValue == 0:
                     res_iter[i] = iterasi
-                    res_val[i] = current.state_value
+                    res_val[i] = current.stateValue
                     found = True
                     break
                 
-            if best is None or current.state_value > best.state_value:
+            if best is None or current.stateValue > best.stateValue:
                 best = current
         
         # Plot Hasil
@@ -276,7 +274,7 @@ class HillClimbing(LocalSearch):
                 'x_label': 'Iterasi',
                 'y_label': 'State Value',
                 'x_data': iters,
-                'y_data': state_values
+                'y_data': stateValues
             },
             'HC Random Restart (Stuck Value)': {
                 'x_label': 'Restart',
@@ -293,8 +291,8 @@ class HillClimbing(LocalSearch):
         }
 
         stats = {
-            'initial_state_value': initial_state_value,
-            'final_state_value': best.state_value,
+            'initial_stateValue': initial_stateValue,
+            'final_stateValue': best.stateValue,
             'restarts': restart[-1],
             'iter_restart': res_iter,
             'plot_graph': plotting_hasil

@@ -67,56 +67,56 @@ def run_tests():
     # -----------------------------------------------------------
     # PENGUJIAN NON-CALLABLE METHOD
     # -----------------------------------------------------------
-    print_test_section("PENGUJIAN initialize_domain")
+    print_test_section("PENGUJIAN initializeDomain")
     state_init = State()
-    state_init.initialize_domain(repo)
-    assert hasattr(state_init, "repo") and hasattr(state_init, "available_slots")
-    print("RESULT: initialize_domain BERHASIL.")
+    state_init.initializeDomain(repo)
+    assert hasattr(state_init, "repo") and hasattr(state_init, "availableSlots")
+    print("RESULT: initializeDomain BERHASIL.")
 
     print_test_section("PENGUJIAN copy")
     state_copy = state_init.copy()
     assert state_copy is not state_init
     assert state_copy.repo is state_init.repo
-    assert state_copy.available_slots == state_init.available_slots
+    assert state_copy.availableSlots == state_init.availableSlots
     print("RESULT: copy BERHASIL.")
 
-    print_test_section("PENGUJIAN assign_mk dan remove_mk")
+    print_test_section("PENGUJIAN assignMK dan removeMK")
     state_assign = State()
-    state_assign.initialize_domain(repo)
-    state_assign.assign_mk(mk_a.kode, slot_pagi_r1[0], w_pagi)
+    state_assign.initializeDomain(repo)
+    state_assign.assignMK(mk_a.kode, slot_pagi_r1[0], w_pagi)
     assert (slot_pagi_r1[0], w_pagi) in state_assign.assignments
-    removed = state_assign.remove_mk(slot_pagi_r1[0], w_pagi)
+    removed = state_assign.removeMK(slot_pagi_r1[0], w_pagi)
     assert removed is not None and (slot_pagi_r1[0], w_pagi) not in state_assign.assignments
-    print("RESULT: assign_mk dan remove_mk BERHASIL.")
+    print("RESULT: assignMK dan removeMK BERHASIL.")
 
-    print_test_section("PENGUJIAN swap_mk")
+    print_test_section("PENGUJIAN swapMK")
     state_swap = State()
-    state_swap.initialize_domain(repo)
-    state_swap.assign_mk(mk_a.kode, slot_pagi_r1[0], w_pagi)
-    state_swap.assign_mk(mk_b.kode, slot_pagi_r2[0], w_pagi)
+    state_swap.initializeDomain(repo)
+    state_swap.assignMK(mk_a.kode, slot_pagi_r1[0], w_pagi)
+    state_swap.assignMK(mk_b.kode, slot_pagi_r2[0], w_pagi)
     before_swap = (state_swap.assignments[(slot_pagi_r1[0], w_pagi)].kode, state_swap.assignments[(slot_pagi_r2[0], w_pagi)].kode)
-    state_swap.swap_mk((slot_pagi_r1[0], w_pagi), (slot_pagi_r2[0], w_pagi))
+    state_swap.swapMK((slot_pagi_r1[0], w_pagi), (slot_pagi_r2[0], w_pagi))
     after_swap = (state_swap.assignments[(slot_pagi_r1[0], w_pagi)].kode, state_swap.assignments[(slot_pagi_r2[0], w_pagi)].kode)
     assert before_swap == after_swap or after_swap == (mk_b.kode, mk_a.kode)
-    print("RESULT: swap_mk BERHASIL.")
+    print("RESULT: swapMK BERHASIL.")
 
-    print_test_section("PENGUJIAN initialize_random_state")
+    print_test_section("PENGUJIAN initializeRandomSuccessor")
     state_rand = State()
-    state_rand.initialize_domain(repo)
-    state_rand.initialize_random_state()
+    state_rand.initializeDomain(repo)
+    state_rand.initializeRandomSuccessor()
     assigned_mk = set(mk.kode for mk in state_rand.assignments.values())
     assert mk_a.kode in assigned_mk and mk_b.kode in assigned_mk
-    print("RESULT: initialize_random_state BERHASIL.")
+    print("RESULT: initializeRandomSuccessor BERHASIL.")
 
     # -----------------------------------------------------------
-    print_test_section("PENGUJIAN count_state_value")
+    print_test_section("PENGUJIAN countStateValue")
     state_conflict = State()
-    state_conflict.initialize_domain(repo)
+    state_conflict.initializeDomain(repo)
     
     # Skenario Konflik: MKA & MKB di waktu yang sama (w_pagi).
     # Mhs X mengambil MKA(P1) & MKB(P2). Dosen bentrok (Joko).
-    state_conflict.assign_mk(mk_a.kode, slot_pagi_r1[0], w_pagi)
-    state_conflict.assign_mk(mk_b.kode, slot_pagi_r2[0], w_pagi)
+    state_conflict.assignMK(mk_a.kode, slot_pagi_r1[0], w_pagi)
+    state_conflict.assignMK(mk_b.kode, slot_pagi_r2[0], w_pagi)
     
     # Perhitungan Beban (Cost):
     # 1. Mhs Bentrok: Mhs X (P1=1.75 + P2=1.5) = 3.25
@@ -126,21 +126,21 @@ def run_tests():
     # Total Beban (Cost): 3.25 + 4.0 = 7.25
     # State Value Diharapkan: -7.25
     
-    state_value_result = state_conflict.count_state_value(*objectives)
+    stateValue_result = state_conflict.countStateValue(*objectives)
     expected_value = -5.25
     
-    print(f"Total Beban (Cost): {-state_value_result} (Diharapkan 5.25)")
-    print(f"State Value Dihasilkan: {state_value_result} (Diharapkan {expected_value})")
+    print(f"Total Beban (Cost): {-stateValue_result} (Diharapkan 5.25)")
+    print(f"State Value Dihasilkan: {stateValue_result} (Diharapkan {expected_value})")
 
-    if abs(state_value_result - expected_value) < 0.001:
-        print("RESULT: count_state_value BERHASIL.")
+    if abs(stateValue_result - expected_value) < 0.001:
+        print("RESULT: countStateValue BERHASIL.")
     else:
-        print("RESULT: count_state_value GAGAL.")
+        print("RESULT: countStateValue GAGAL.")
 
     # -----------------------------------------------------------
-    print_test_section("PENGUJIAN generate_all_successors")
+    print_test_section("PENGUJIAN generateAllSuccessors")
     
-    successors = state_conflict.generate_all_successors(*objectives)
+    successors = state_conflict.generateAllSuccessors(*objectives)
     
     # Cek apakah ada successors yang dihasilkan
     print(f"Jumlah successors yang dihasilkan: {len(successors)}")
@@ -151,34 +151,34 @@ def run_tests():
         print(f"Ada successor dengan assignments berbeda: {has_different_state}")
         
         if has_different_state:
-            print("RESULT: generate_all_successors BERHASIL.")
+            print("RESULT: generateAllSuccessors BERHASIL.")
         else:
-            print("RESULT: generate_all_successors GAGAL (semua successor sama).")
+            print("RESULT: generateAllSuccessors GAGAL (semua successor sama).")
     else:
-        print("RESULT: generate_all_successors GAGAL (tidak ada successor dihasilkan).")
+        print("RESULT: generateAllSuccessors GAGAL (tidak ada successor dihasilkan).")
 
     # -----------------------------------------------------------
     print_test_section("PENGUJIAN generate_successor (Best Move)")
     
     # State awal untuk pengujian Best Move
     state_test_best = State()
-    state_test_best.initialize_domain(repo)
+    state_test_best.initializeDomain(repo)
     
     # Beri satu konflik Dosen Gabisa:
     # MKA @ slot_jumat_r1 (Jumat, 10). Wati (pengampu MKA) TIDAK PREFERENSI di Jumat.
-    state_test_best.assign_mk(mk_a.kode, slot_jumat_r1[0], slot_jumat_r1[1]) 
+    state_test_best.assignMK(mk_a.kode, slot_jumat_r1[0], slot_jumat_r1[1]) 
     
     # Initial Cost (Beban): 
     # MKA: Dosen Wati tidak bisa di Jumat (Mhs MKA=2). Cost Dosen Gabisa = 2.0
     # State Value Awal: -2.0
-    initial_value = state_test_best.count_state_value(*objectives)
+    initial_value = state_test_best.countStateValue(*objectives)
     print(f"State Value Awal: {initial_value}")
     
     # Analisis Best Move:
     # Pindah MKA ke slot_siang_r2 (Senin, 9). Wati bisa. Cost Dosen Gabisa = 0. State Value = 0.0 (BEST)
 
-    successor_best = state_test_best.generate_random_successor(*objectives)
-    final_value = successor_best.count_state_value(*objectives)
+    successor_best = state_test_best.generateRandomSuccessor(*objectives)
+    final_value = successor_best.countStateValue(*objectives)
     
     is_optimal_move = (final_value > initial_value)
     
