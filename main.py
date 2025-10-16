@@ -24,8 +24,7 @@ def main():  # fungsi utama program sebagai driver
     selectedAlgorithm = UserInterfaceService.selectAlgorithm()  # service untuk pilih algoritma
     initialState = State()  # buat state kosong
     initialState.initializeDomain(repository)  # inisialisasi dengan data repository
-    # objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang, kasus_dosen_gabisa, kasus_dosen_bentrok)
-    objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang)
+    objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang, kasus_dosen_gabisa, kasus_dosen_bentrok)
     initialState.initializeRandomSuccessor(*objectiveFunctions)  # buat assignment awal
     OutputService.showOptimizationStart()  # pesan mulai 
 
