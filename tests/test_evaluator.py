@@ -71,11 +71,11 @@ def run_tests():
     print_test_section("SKENARIO 1: DASAR (Tanpa Konflik)")
     
     state1 = State()
-    state1.initialize_domain(repo)  # Ensure domain is initialized
-    state1.assign_mk(mk_a.kode, slot_pagi_r1[0], slot_pagi_r1[1]) 
-    state1.assign_mk(mk_b.kode, slot_siang_r2[0], slot_siang_r2[1]) 
+    state1.initializeDomain(repo)  # Ensure domain is initialized
+    state1.assignMK(mk_a.kode, slot_pagi_r1[0], slot_pagi_r1[1]) 
+    state1.assignMK(mk_b.kode, slot_siang_r2[0], slot_siang_r2[1]) 
     
-    cost1 = state1.count_state_value(
+    cost1 = state1.countStateValue(
         kasus_mahasiswa_bentrok, 
         kasus_kapasitas_kurang, 
         kasus_dosen_gabisa, 
@@ -92,12 +92,12 @@ def run_tests():
     print_test_section("SKENARIO 2: KONFLIK MAHASISWA DAN KAPASITAS")
 
     state2 = State()
-    state2.initialize_domain(repo)
+    state2.initializeDomain(repo)
     
     # Jadwal bentrok di waktu yang sama: MKA & MKB @ waktu yang sama
     # Assign MKA dan MKB ke waktu yang sama
-    state2.assign_mk(mk_a.kode, slot_pagi_r2[0], w_pagi) 
-    state2.assign_mk(mk_b.kode, slot_pagi_r1[0], w_pagi) 
+    state2.assignMK(mk_a.kode, slot_pagi_r2[0], w_pagi) 
+    state2.assignMK(mk_b.kode, slot_pagi_r1[0], w_pagi) 
     
     cost_mhs = kasus_mahasiswa_bentrok(state2)
     print(f"Cost Mahasiswa Bentrok: {cost_mhs} (Diharapkan 3.25)")
@@ -114,12 +114,12 @@ def run_tests():
     print_test_section("SKENARIO 3: KONFLIK DOSEN")
 
     state3 = State()
-    state3.initialize_domain(repo)
+    state3.initializeDomain(repo)
     
     # Jadwal bentrok di waktu yang sama: MKA & MKC @ waktu yang sama
     # Assign MKA dan MKC ke waktu yang sama
-    state3.assign_mk(mk_a.kode, slot_pagi_r1[0], w_pagi) 
-    state3.assign_mk(mk_c.kode, slot_pagi_r2[0], w_pagi) 
+    state3.assignMK(mk_a.kode, slot_pagi_r1[0], w_pagi) 
+    state3.assignMK(mk_c.kode, slot_pagi_r2[0], w_pagi) 
     
     cost_dosen_gabisa = kasus_dosen_gabisa(state3)
     print(f"Cost Dosen Gabisa: {cost_dosen_gabisa} (Diharapkan 2.0)")

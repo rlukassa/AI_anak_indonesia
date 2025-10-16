@@ -32,8 +32,8 @@ class TestGeneticAlgorithmWithJSON(unittest.TestCase):
         """
         # Inisialisasi state awal
         initial_state = State()
-        initial_state.initialize_domain(self.repo)
-        initial_state.initialize_random_state(*self.objectives)
+        initial_state.initializeDomain(self.repo)
+        initial_state.initializeRandomSuccessor(*self.objectives)
 
         print("======================================================================")
         print("Initial State")
@@ -63,10 +63,10 @@ class TestGeneticAlgorithmWithJSON(unittest.TestCase):
 
         # Verifikasi hasil
         print("\n--- Hasil Uji Algoritma Genetika dengan Data JSON ---")
-        print(f"Nilai akhir solusi (state_value): {solution.state_value}")
+        print(f"Nilai akhir solusi (stateValue): {solution.stateValue}")
         
         # Periksa apakah nilai beban adalah nol (atau sangat mendekati nol)
-        self.assertLessEqual(solution.state_value, 0, "State value harus 0 atau kurang")
+        self.assertLessEqual(solution.stateValue, 0, "State value harus 0 atau kurang")
         
         # Periksa setiap pelanggaran secara terpisah untuk verifikasi yang lebih rinci
         mahasiswa_bentrok_val = kasus_mahasiswa_bentrok(solution)
@@ -84,7 +84,7 @@ class TestGeneticAlgorithmWithJSON(unittest.TestCase):
         self.assertEqual(dosen_gabisa_val, 0, "Pelanggaran dosen tidak bisa harus 0.")
         self.assertEqual(dosen_bentrok_val, 0, "Pelanggaran dosen bentrok harus 0.")
         
-        if solution.state_value == 0:
+        if solution.stateValue == 0:
             print("\n✅ Algoritma Genetika berhasil menemukan solusi optimal!")
         else:
             print("\n❌ Algoritma Genetika tidak menemukan solusi optimal dalam iterasi yang diberikan.")

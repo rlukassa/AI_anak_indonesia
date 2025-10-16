@@ -12,7 +12,7 @@ from src.eval.evaluator import (
 def build_state_from_sample():
     repo = create_repo("data/sample_input.json")
     s = State()
-    s.initialize_domain(repo)
+    s.initializeDomain(repo)
     return s
 
 
@@ -29,7 +29,7 @@ def run_variant(variant: str):
         kasus_dosen_bentrok,
     )
 
-    print(f"Final state value: {final.state_value}")
+    print(f"Final state value: {final.stateValue}")
     print(f"Number of assignments: {len(final.assignments)}")
 
     for i, (slot, mk) in enumerate(final.assignments.items()):

@@ -18,7 +18,7 @@ class AlgorithmExecutionService:
         )
         
         # initialize random state sebelum algoritma dimulai
-        initialState.initialize_random_state(*objectiveFunctions)  # generate initial assignment
+        initialState.initializeRandomSuccessor(*objectiveFunctions)  # generate initial assignment
         
         # buat instance algoritma hill climbing
         hillClimbingAlgorithm = HillClimbing(
@@ -44,7 +44,7 @@ class AlgorithmExecutionService:
         )
         
         # initialize random state sebelum algoritma dimulai
-        initialState.initialize_random_state(*objectiveFunctions)  # generate initial assignment
+        initialState.initializeRandomSuccessor(*objectiveFunctions)  # generate initial assignment
         
         # buat instance algoritma simulated annealing
         simulatedAnnealingAlgorithm = SA(
@@ -68,7 +68,7 @@ class AlgorithmExecutionService:
         )
         
         # initialize random state sebelum algoritma dimulai
-        initialState.initialize_random_state(*objectiveFunctions)  # generate initial assignment
+        initialState.initializeRandomSuccessor(*objectiveFunctions)  # generate initial assignment
         
         # buat instance algoritma genetic algorithm
         geneticAlgorithm = GeneticAlgorithm(

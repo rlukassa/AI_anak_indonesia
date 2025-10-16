@@ -39,14 +39,14 @@ class OutputService:
         if 'iterations' in executionStats:
             info.addInfo("Jumlah Iterasi", f"{executionStats['iterations']:,}")
         
-        if 'initial_state_value' in executionStats:
-            info.addInfo("State Value Awal", f"{executionStats['initial_state_value']:.2f}")
+        if 'initial_stateValue' in executionStats:
+            info.addInfo("State Value Awal", f"{executionStats['initial_stateValue']:.2f}")
         
-        if 'final_state_value' in executionStats:
-            info.addInfo("State Value Akhir", f"{executionStats['final_state_value']:.2f}")
+        if 'final_stateValue' in executionStats:
+            info.addInfo("State Value Akhir", f"{executionStats['final_stateValue']:.2f}")
         
-        if 'initial_state_value' in executionStats and 'final_state_value' in executionStats:
-            improvement = executionStats['final_state_value'] - executionStats['initial_state_value']
+        if 'initial_stateValue' in executionStats and 'final_stateValue' in executionStats:
+            improvement = executionStats['final_stateValue'] - executionStats['initial_stateValue']
             info.addInfo("Peningkatan", f"{improvement:+.2f}")
 
         if 'restarts' in executionStats and 'iter_restart' in executionStats:
@@ -73,7 +73,7 @@ class OutputService:
             f"Total Mata Kuliah: {totalCourses}\n"
             f"Total Ruangan: {totalRooms}\n"
             f"Total Assignment: {totalAssignments}\n"
-            f"Kualitas Jadwal: {'Baik' if state.state_value > -10 else 'Perlu Perbaikan'}\n"
+            f"Kualitas Jadwal: {'Baik' if state.stateValue > -10 else 'Perlu Perbaikan'}\n"
             f"Utilisasi Slot: {(totalAssignments / (totalRooms * 55)) * 100:.1f}%"
         )
         
@@ -85,7 +85,6 @@ class OutputService:
     
     @staticmethod
     def generateScheduleTables(state: State) -> Dict[str, Table]:
-        """Generate tabel jadwal per ruangan"""
         tablesByRoom = {}
         
         # Group assignments by room
@@ -168,7 +167,6 @@ class OutputService:
     @staticmethod
     def displayResults(state: State, algorithmName: str, parameters: Dict[str, Any], 
                       executionStats: Dict[str, Any], initialState: State = None) -> None:
-        """Display semua hasil optimasi"""
         
         # Generate dan display algorithm info
         algorithmInfo = OutputService.generateAlgorithmInfo(algorithmName, parameters, executionStats)
@@ -272,7 +270,7 @@ class OutputService:
             # Informasi state value
             f.write("NILAI FUNGSI OBJEKTIF\n")
             f.write("-" * 40 + "\n")
-            f.write(f"State Value Akhir   : {state.state_value:.2f}\n")
+            f.write(f"State Value Akhir   : {state.stateValue:.2f}\n")
             
             # Detail constraint violations jika ada
             if hasattr(state, 'constraint_violations'):
