@@ -1,7 +1,6 @@
 import matplotlib.pyplot as plt
-from os import system, name
-from datetime import datetime
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any
+from src.io.utils import Utils
 from src.model.state import State
 from ..io.Table import Table
 from ..io.Info import Info
@@ -9,8 +8,8 @@ from ..io.Info import Info
 class OutputService:
     
     @staticmethod
-    def generateAlgorithmInfo(algorithmName: str, parameters: Dict[str, Any], 
-                            executionStats: Dict[str, Any]) -> Info:
+    def generateAlgorithmInfo(algorithmName: str, parameters: Dict[str, Any], executionStats: Dict[str, Any]) -> Info:
+        """Build Info object describing algorithm parameters and execution stats."""
         info = Info()
         info.addInfo("Algoritma", algorithmName)
         
@@ -39,25 +38,26 @@ class OutputService:
         if 'iterations' in executionStats:
             info.addInfo("Jumlah Iterasi", f"{executionStats['iterations']:,}")
         
-        if 'initial_state_value' in executionStats:
-            info.addInfo("State Value Awal", f"{executionStats['initial_state_value']:.2f}")
+        if 'initial_stateValue' in executionStats:
+            info.addInfo("State Value Awal", f"{executionStats['initial_stateValue']:.2f}")
         
-        if 'final_state_value' in executionStats:
-            info.addInfo("State Value Akhir", f"{executionStats['final_state_value']:.2f}")
+        if 'final_stateValue' in executionStats:
+            info.addInfo("State Value Akhir", f"{executionStats['final_stateValue']:.2f}")
         
-        if 'initial_state_value' in executionStats and 'final_state_value' in executionStats:
-            improvement = executionStats['final_state_value'] - executionStats['initial_state_value']
+        if 'initial_stateValue' in executionStats and 'final_stateValue' in executionStats:
+            improvement = executionStats['final_stateValue'] - executionStats['initial_stateValue']
             info.addInfo("Peningkatan", f"{improvement:+.2f}")
 
         if 'restarts' in executionStats and 'iter_restart' in executionStats:
             info.addInfo("Jumlah Restart", f"{executionStats['restarts']}")
-            for i in range(executionStats['restarts']):
-                info.addInfo(f"Iterasi Restart ke-{i}", f"{executionStats['iter_restart'][i]}")
+            for i, it in enumerate(executionStats['iter_restart']):
+                info.addInfo(f"Iterasi Restart ke-{i-1}", f"{it}")
 
         if 'stuck_freq' in executionStats:
             info.addInfo("Stuck Frequency", f"{executionStats['stuck_freq']}")
 
         return info
+    
     
     @staticmethod
     def generateScheduleAnalysis(state: State) -> Info:
@@ -73,19 +73,17 @@ class OutputService:
             f"Total Mata Kuliah: {totalCourses}\n"
             f"Total Ruangan: {totalRooms}\n"
             f"Total Assignment: {totalAssignments}\n"
-            f"Kualitas Jadwal: {'Baik' if state.state_value > -10 else 'Perlu Perbaikan'}\n"
+            f"Kualitas Jadwal: {'Baik' if state.stateValue > -10 else 'Perlu Perbaikan'}\n"
             f"Utilisasi Slot: {(totalAssignments / (totalRooms * 55)) * 100:.1f}%"
         )
         
         info.addSection("ANALISIS JADWAL", analysisContent)
-        
         return info
     
-
     
     @staticmethod
     def generateScheduleTables(state: State) -> Dict[str, Table]:
-        """Generate tabel jadwal per ruangan"""
+        """Generate per-room schedule tables from the current state assignments."""
         tablesByRoom = {}
         
         # Group assignments by room
@@ -127,8 +125,10 @@ class OutputService:
         
         return tablesByRoom
     
+    
     @staticmethod
     def generateGraph(algorithmName: str, executionStats: Dict[str, Any]) -> None:
+        """Render line plots from executionStats['plot_graph'] grouped by axes labels."""
         if 'plot_graph' not in executionStats:
             print("\nTidak ada data grafik yang tersedia.")
             return
@@ -165,14 +165,18 @@ class OutputService:
             plt.grid(True)
             plt.show()
 
+
     @staticmethod
     def displayResults(state: State, algorithmName: str, parameters: Dict[str, Any], 
                       executionStats: Dict[str, Any], initialState: State = None) -> None:
-        """Display semua hasil optimasi"""
         
         # Generate dan display algorithm info
         algorithmInfo = OutputService.generateAlgorithmInfo(algorithmName, parameters, executionStats)
         algorithmInfo.display()
+        
+        # Generate dan display schedule analysis
+        scheduleAnalysis = OutputService.generateScheduleAnalysis(state)
+        scheduleAnalysis.display()
         
         # Generate dan display initial state schedule tables (jadwal state awal)
         if initialState:
@@ -183,16 +187,10 @@ class OutputService:
             if initialTables:
                 for roomCode, table in initialTables.items():
                     print(f"\nJADWAL RUANGAN (INITIAL): {roomCode}")
-                    print("=" * 80)
                     table.display()
-                    print("*Kolom jam di output merupakan jam mulai")
             else:
                 print("Tidak ada jadwal awal yang dapat ditampilkan.")
                 print("Initial state mungkin kosong atau tidak ada assignment.")
-        
-        # Generate dan display schedule analysis
-        scheduleAnalysis = OutputService.generateScheduleAnalysis(state)
-        scheduleAnalysis.display()
         
         # Generate dan display final state tables (jadwal hasil optimasi)
         print(f"\nJADWAL HASIL OPTIMASI")
@@ -202,9 +200,7 @@ class OutputService:
         if tables:
             for roomCode, table in tables.items():
                 print(f"\nJADWAL RUANGAN (FINAL): {roomCode}")
-                print("=" * 80)
                 table.display()
-                print("*Kolom jam di output merupakan jam mulai")
         else:
             print("\nTidak ada jadwal yang dapat ditampilkan.")
             print("State mungkin kosong atau tidak ada assignment.")
@@ -212,40 +208,18 @@ class OutputService:
         # Generate Graph
         OutputService.generateGraph(algorithmName, executionStats)
     
-    @staticmethod # (1.) Ini cuman nampilin pesan doang
-    # langsung ke Settings.getValidFilePath (2.) --> tapi itu buat cek validPathnya aja si
-    # langsung ketiga deng (3.) UserInterfaceServices.selectAlgorithm
+    
+    @staticmethod
     def showWelcome() -> None:
-        """Tampilkan welcome message"""
-        print("\n" + "="*80)
-        print("SISTEM OPTIMASI PENJADWALAN KULIAH")
-        print("="*80)
-    
-    @staticmethod
-    def showOptimizationStart() -> None:
-        """Tampilkan pesan mulai optimasi"""
-        print("\nMemulai optimasi penjadwalan...")
-    
-    @staticmethod
-    def showResultHeader() -> None:
-        """Tampilkan header hasil optimasi"""
-        print("\n" + "="*80)
-        print("HASIL OPTIMASI PENJADWALAN KULIAH")
-        print("="*80)
+        """Print a width-aware, ANSI-styled CLI banner."""
+        Utils.showBox("SISTEM OPTIMASI PENJADWALAN KULIAH", "Local Search")
 
-    @staticmethod
-    def clearTerminal() -> None:
-        if name == 'nt':
-            _ = system('cls')
-        else:
-            _ = system('clear')
     
     @staticmethod
     def saveResults(state: State, algorithmName: str, parameters: Dict[str, Any], 
                    executionStats: Dict[str, Any], filename: str, initialState: State = None) -> None:
         """Save hasil optimasi ke file dan save plot jika ada"""
         import os
-        from datetime import datetime
         
         # Buat folder results jika belum ada
         results_dir = "results"
@@ -255,11 +229,6 @@ class OutputService:
         # Save hasil teks ke file
         text_filename = os.path.join(results_dir, f"{filename}.txt")
         with open(text_filename, 'w', encoding='utf-8') as f:
-            # Header
-            f.write("=" * 80 + "\n")
-            f.write("HASIL OPTIMASI PENJADWALAN KULIAH\n")
-            f.write("=" * 80 + "\n")
-            f.write(f"Tanggal: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
             
             # Informasi algoritma
             info = OutputService.generateAlgorithmInfo(algorithmName, parameters, executionStats)
@@ -272,7 +241,7 @@ class OutputService:
             # Informasi state value
             f.write("NILAI FUNGSI OBJEKTIF\n")
             f.write("-" * 40 + "\n")
-            f.write(f"State Value Akhir   : {state.state_value:.2f}\n")
+            f.write(f"State Value Akhir   : {state.stateValue:.2f}\n")
             
             # Detail constraint violations jika ada
             if hasattr(state, 'constraint_violations'):
@@ -289,10 +258,8 @@ class OutputService:
                 
                 if initialTables:
                     for roomCode, table in initialTables.items():
-                        f.write(f"\nJADWAL RUANGAN (AWAL): {roomCode}\n")
-                        f.write("-" * 80 + "\n")
+                        f.write(f"\nJADWAL RUANGAN (INITIAL): {roomCode}\n")
                         f.write(OutputService._tableToString(table))
-                        f.write("\n*Kolom jam di output merupakan jam mulai\n")
                 else:
                     f.write("Tidak ada jadwal awal yang dapat ditampilkan.\n")
                 f.write("\n")
@@ -305,15 +272,9 @@ class OutputService:
             if tables:
                 for roomCode, table in tables.items():
                     f.write(f"\nJADWAL RUANGAN (FINAL): {roomCode}\n")
-                    f.write("-" * 80 + "\n")
-                    # Convert table to string format
                     f.write(OutputService._tableToString(table))
-                    f.write("\n*Kolom jam di output merupakan jam mulai\n")
             else:
                 f.write("Tidak ada jadwal yang dapat ditampilkan.\n")
-            
-            f.write("\n" + "=" * 80 + "\n")
-            f.write("FILE GENERATED BY SISTEM OPTIMASI PENJADWALAN KULIAH\n")
         
         # Save plot jika ada data plotting
         plot_saved = False
@@ -358,7 +319,6 @@ class OutputService:
     def _tableToString(table: Table) -> str:
         """Convert Table object ke string untuk save ke file"""
         try:
-            # Gunakan method render() yang sudah ada di Table class
             return table.render()
         except Exception as e:
             return f"Error: Unable to convert table to string - {str(e)}"

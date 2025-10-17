@@ -1,5 +1,5 @@
-from main import main  # import fungsi main dari main.py
+from main import main
 
 
-if __name__ == "__main__":  # jika file dijalankan langsung
-    main()  # panggil fungsi main
+if __name__ == "__main__":
+    main()

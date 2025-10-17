@@ -1,69 +1,62 @@
-import src.io.repo_loader as Repository  # import modul repository loader
-from src.model.state import State  # import class state untuk jadwal
-from src.services.OutputService import OutputService  # import unified output service
-from src.services.UserInterfaceService import UserInterfaceService  # import UI service
-from src.services.AlgorithmConfigService import AlgorithmConfigService  # import algorithm config service
-from src.services.OutputConfigService import OutputConfigService  # import output config service
-from src.services.AlgorithmExecutionService import AlgorithmExecutionService  # import algorithm executor
-from src.eval.evaluator import (  # import objective functions
-    kasus_mahasiswa_bentrok, 
-    kasus_kapasitas_kurang, 
-    kasus_dosen_gabisa, 
+import src.io.repo_loader as Repository
+from src.model.state import State
+from src.io.utils import Utils
+from src.services.OutputService import OutputService
+from src.services.UserInterfaceService import UserInterfaceService
+from src.services.AlgorithmConfigService import AlgorithmConfigService
+from src.services.OutputConfigService import OutputConfigService
+from src.services.AlgorithmExecutionService import AlgorithmExecutionService
+from src.eval.evaluator import (
+    kasus_mahasiswa_bentrok,
+    kasus_kapasitas_kurang,
+    kasus_dosen_gabisa,
     kasus_dosen_bentrok
 )
 
-def main():  # fungsi utama program sebagai driver
-    OutputService.clearTerminal()
-    OutputService.showWelcome()  
-    filePath = UserInterfaceService.getValidFilePath()
-    repository = Repository.create_repo(filePath) # yang ubah ke object itu
-    initialState = State()  # buat state kosong
-    initialState.initialize_domain(repository)  # inisialisasi dengan data repository
-    objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang, kasus_dosen_gabisa, kasus_dosen_bentrok)
-    # objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang)
-    initialState.initialize_random_state(*objectiveFunctions)  # buat assignment awal
-    selectedAlgorithm = UserInterfaceService.selectAlgorithm()  # service untuk pilih algoritma
-    OutputService.clearTerminal()
-
-    # // Buat HC
-    if selectedAlgorithm == "HC":  # pilih Hill Climbing
-        config = AlgorithmConfigService.configureHillClimbing()  # service konfigurasi HC
-
-        # driver algo       
-        finalState, algorithmStats = AlgorithmExecutionService.runHillClimbing(initialState, config)  # eksekusi HC
-        algorithmName = f"Hill Climbing"  # nama dengan variant kek HC Random Restart 
-    
-    # // BUAT SA
-    elif selectedAlgorithm == "SA":  # jika pilih Simulated Annealing
-        config = AlgorithmConfigService.configureSimulatedAnnealing()  # service konfigurasi SA
-        finalState, algorithmStats = AlgorithmExecutionService.runSimulatedAnnealing(initialState, config)  # eksekusi SA
-        algorithmName = "Simulated Annealing"  # nama algoritma
+def main():
+    while True:
+        Utils.clear_screen()
+        OutputService.showWelcome()  
+        filePath = UserInterfaceService.getValidFilePath()
+        repository = Repository.create_repo(filePath)
+        selectedAlgorithm = UserInterfaceService.selectAlgorithm()
+        initialState = State()
+        initialState.initializeDomain(repository)
+        objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang, kasus_dosen_gabisa, kasus_dosen_bentrok)
+        initialState.initializeRandomSuccessor(*objectiveFunctions)
         
-    # // BUAT GA
-    elif selectedAlgorithm == "GA":  # jika pilih Genetic Algorithm
-        config = AlgorithmConfigService.configureGeneticAlgorithm()  # service konfigurasi GA
+        # Hill Climbing
+        if selectedAlgorithm == "HC":
+            config = AlgorithmConfigService.configureHillClimbing()
+            finalState, algorithmStats = AlgorithmExecutionService.runHillClimbing(initialState, config)
+            algorithmName = f"Hill Climbing"
+            
+        # Simmulated Annealing
+        elif selectedAlgorithm == "SA":
+            config = AlgorithmConfigService.configureSimulatedAnnealing()
+            finalState, algorithmStats = AlgorithmExecutionService.runSimulatedAnnealing(initialState, config)
+            algorithmName = "Simulated Annealing"
+            
+        # Genetic Algorithm
+        elif selectedAlgorithm == "GA":
+            config = AlgorithmConfigService.configureGeneticAlgorithm()
+            finalState, algorithmStats = AlgorithmExecutionService.runGeneticAlgorithm(initialState, config)
+            algorithmName = "Genetic Algorithm"
         
-        finalState, algorithmStats = AlgorithmExecutionService.runGeneticAlgorithm(initialState, config)  # eksekusi GA
-        algorithmName = "Genetic Algorithm"  # nama algoritma
-
-    # nah finalState dan algorithmStats itu hasil dari algoritma nya 
-    # terus keluarain display Resultsnya (6.) 7.
-    # tapi ini yang dibawah biarin aja
-    # jadi fokuske 4. dan 5. 
-    # dah itu
-    # harusnya udah keluar tabelnya kalo bener 
-
-    
-    
-    # HEADER OUTPUT    
-    OutputService.showResultHeader()  # tampilkan header hasil yang HASIL OPTIMASI
-    
-    # display semua hasil optimasi
-    OutputService.displayResults(finalState, algorithmName, config, algorithmStats, initialState)  # display lengkap dari informasi optimasi sampe tabel dan info
-    
-    if OutputConfigService.askSaveOption():  # tanya save option
-        filename = OutputConfigService.generateFilename(algorithmName)  # generate nama file
-        # Implementasi save yang sebenarnya
-        OutputService.saveResults(finalState, algorithmName, config, algorithmStats, filename, initialState)
+        Utils.clear_screen()
+        OutputService.showWelcome()  
+        
+        # Display optimized results
+        OutputService.displayResults(finalState, algorithmName, config, algorithmStats, initialState)
+        
+        # Save file option
+        if OutputConfigService.askSaveOption():
+            Utils.clear_screen()
+            OutputService.showWelcome()  
+            filename = OutputConfigService.generateFilename(algorithmName)
+            OutputService.saveResults(finalState, algorithmName, config, algorithmStats, filename, initialState)
+        
+        # Again?
+        Utils.askYesNo("Again? (Y/N) : ")
 
 

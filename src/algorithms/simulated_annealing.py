@@ -11,30 +11,25 @@ class SA(LocalSearch):
         self.stopT = stopT  # suhu yang menghentikan algoritma
     
     def search(self, state: State, *objectives) -> Tuple[State, Dict[str, Any]]: 
-        """Search dengan tracking statistik untuk output"""
         import time
         
         start_time = time.time()
         currT = self.initialT 
         currState = state 
-        currState.state_value = currState.count_state_value(*objectives)
+        currState.stateValue = currState.countStateValue(*objectives)
         
-        initial_state_value = currState.state_value
+        initial_stateValue = currState.stateValue
         iterations = 0
         stuck_freq = 0
 
         # Plotting Hasil
-        all_state_values = [initial_state_value]
+        all_stateValues = [initial_stateValue]
         all_probabilities = [1]
         iterasi = [iterations]
         
-        print(f"Memulai Simulated Annealing...")
-        print(f"   Initial Temperature: {self.initialT}")
-        print(f"   Initial State Value: {initial_state_value:.2f}")
-        
         while currT > self.stopT:  # kalo masih di atas suhu berhenti
-            successor = currState.generate_random_successor(*objectives) # cari successor (random)
-            _deltaE = successor.state_value - currState.state_value # hitung delta E = E_successor - E_curr 
+            successor = currState.generateRandomSuccessor(*objectives) # cari successor (random)
+            _deltaE = successor.stateValue - currState.stateValue # hitung delta E = E_successor - E_curr 
 
             if _deltaE > 0:  # Successor lebih baik
                 probabability = 1.0  # Selalu diterima (100%)
@@ -51,22 +46,22 @@ class SA(LocalSearch):
             iterations += 1
 
             # Update Plotting Hasil
-            all_state_values.append(currState.state_value)
+            all_stateValues.append(currState.stateValue)
             all_probabilities.append(probabability)
             iterasi.append(iterations)
             
             # Progress indicator setiap 100 iterasi
-            if iterations % 100 == 0:
-                print(f"   Iterasi {iterations:,}, Temperature: {currT:.2f}, State Value: {currState.state_value:.2f}")
+            # if iterations % 100 == 0:
+            #     print(f"   Iterasi {iterations:,}, Temperature: {currT:.2f}, State Value: {currState.stateValue:.2f}")
         
         end_time = time.time()
         execution_time = end_time - start_time
         
-        print(f"Simulated Annealing selesai!")
-        print(f"   Final Temperature: {currT:.4f}")
-        print(f"   Final State Value: {currState.state_value:.2f}")
-        print(f"   Total Iterasi: {iterations:,}")
-        print(f"   Waktu Eksekusi: {execution_time:.3f} detik")
+        # print(f"Simulated Annealing selesai!")
+        # print(f"   Final Temperature: {currT:.4f}")
+        # print(f"   Final State Value: {currState.stateValue:.2f}")
+        # print(f"   Total Iterasi: {iterations:,}")
+        # print(f"   Waktu Eksekusi: {execution_time:.3f} detik")
         
         # Plotting Hasil
         plotting_hasil = {
@@ -74,7 +69,7 @@ class SA(LocalSearch):
                 'x_label': 'Iterasi',
                 'y_label': 'State Value',
                 'x_data': iterasi,
-                'y_data': all_state_values
+                'y_data': all_stateValues
             },
             'Acceptance Probability': {
                 'x_label': 'Iterasi',
@@ -93,8 +88,8 @@ class SA(LocalSearch):
             'execution_time': execution_time,
             'iterations': iterations,
             'stuck_freq': stuck_freq,
-            'initial_state_value': initial_state_value,
-            'final_state_value': currState.state_value,
+            'initial_stateValue': initial_stateValue,
+            'final_stateValue': currState.stateValue,
             'plot_graph': plotting_hasil
         }
         

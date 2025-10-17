@@ -1,11 +1,8 @@
-# Genetic Algorithm
 from typing import Dict, List, Callable, Set, Tuple, Any
 from src.eval.evaluator import *
 from src.model.entities import *
 from src.model.state import State
 from src.algorithms.local_search import LocalSearch
-from src.algorithms.hill_climbing import HillClimbing
-from src.algorithms.simulated_annealing import SA
 import random
 import time
 
@@ -13,18 +10,17 @@ from src.services.OutputService import OutputService
 
 class GeneticAlgorithm(LocalSearch):
 
-
     def __init__(self, jml_parent:int=4, jml_iterasi:int=500):
         self.state:State = State()
         self.jml_parent:int = jml_parent
         self.jml_iterasi:int = jml_iterasi
         
     
-    def _initialize_available_time_for_matkul(self):
+    def _initialize_availableTime_for_matkul(self):
         self.matkul_slot_domain = {
             kode_mk : {
                 slot
-                for slot in self.state.available_slots
+                for slot in self.state.availableSlots
                 if slot[0] in {
                     waktu
                     for dosen in self.state.repo.dosen_tiap_matkul[kode_mk]
@@ -57,12 +53,11 @@ class GeneticAlgorithm(LocalSearch):
 
 
     def search(self, state:State, *objectives:Callable, conf_crossover=None) -> Tuple[State, Dict[str, Any]]: 
-        """Genetic Algorithm"""
         self.state = state
         
         if self.jml_parent % 2 != 0:
             raise ValueError("N harus kelipatan 2.")
-        self._initialize_available_time_for_matkul()
+        self._initialize_availableTime_for_matkul()
         self._initialize_conf_crossover(conf_crossover)
 
         start_time = time.time()
@@ -70,12 +65,12 @@ class GeneticAlgorithm(LocalSearch):
         # 1. Inisialisasi Parent
         # print("\n[*] Inisialisasi Parent")
         selected_parent:List[State] = self._initialize_parent(*objectives)
-        max_state_value = [max([s.state_value for s in selected_parent])]
-        avg_state_value = [sum([s.state_value for s in selected_parent])/self.jml_parent]
+        max_stateValue = [max([s.stateValue for s in selected_parent])]
+        avg_stateValue = [sum([s.stateValue for s in selected_parent])/self.jml_parent]
         iterasi = [0]
         
-        min_state_value = min([s.state_value for s in selected_parent])
-        best_state = [s for s in selected_parent if s.state_value == max([s.state_value for s in selected_parent])][0]
+        min_stateValue = min([s.stateValue for s in selected_parent])
+        best_state = [s for s in selected_parent if s.stateValue == max([s.stateValue for s in selected_parent])][0]
         found = False
         for i in range(self.jml_iterasi):
             # print(f"\n========== Iterasi {i} ==========")
@@ -85,13 +80,13 @@ class GeneticAlgorithm(LocalSearch):
             #     print(f"[*] Fitness function\n    {fitness_function} -> ", end="")
             # except:
             #     print(f"[*] Fitness function\n    [] -> ", end="")
-            adaptive_scaler = abs(min_state_value) + 1
+            adaptive_scaler = abs(min_stateValue) + 1
             fitness_function = []
             for _, s in enumerate(selected_parent):
-                fitness_function.append(adaptive_scaler + s.state_value)
+                fitness_function.append(adaptive_scaler + s.stateValue)
             # print(f"{fitness_function}")
             # print(f"[*] Adaptive Scaler {i}: {adaptive_scaler}")
-            # print(f"[*] Generation State Value {i}\n    {[s.state_value for s in selected_parent]}")
+            # print(f"[*] Generation State Value {i}\n    {[s.stateValue for s in selected_parent]}")
             
             # 3. Selection
             # print(f"[*] Selection {i}")
@@ -107,7 +102,7 @@ class GeneticAlgorithm(LocalSearch):
                 c1, c2 = self._crossover(p1, p2, *objectives)
 
                 # Konsep Elitisme
-                urutan_state = sorted([p1, p2, c1, c2], key=lambda x: x.state_value, reverse=True)
+                urutan_state = sorted([p1, p2, c1, c2], key=lambda x: x.stateValue, reverse=True)
                 good_state1 = urutan_state[0]
                 good_state2 = urutan_state[1]
 
@@ -117,21 +112,21 @@ class GeneticAlgorithm(LocalSearch):
                 good_state2 = self._mutation(good_state2, *objectives)
                     
                 # Cek Ketercapaian Solusi
-                if good_state1.state_value >= best_state.state_value: best_state = good_state1
-                if good_state2.state_value >= best_state.state_value: best_state = good_state2
+                if good_state1.stateValue >= best_state.stateValue: best_state = good_state1
+                if good_state2.stateValue >= best_state.stateValue: best_state = good_state2
 
                 selected_parent[j]  = good_state1
                 selected_parent[j+1]= good_state2
 
-                if good_state1.state_value == 0 or good_state2.state_value == 0: 
+                if good_state1.stateValue == 0 or good_state2.stateValue == 0: 
                     found = True; break
 
-            # 5. Evaluasi min_state_value
-            min_state_value = min(min_state_value, min([s.state_value for s in selected_parent]))
+            # 5. Evaluasi min_stateValue
+            min_stateValue = min(min_stateValue, min([s.stateValue for s in selected_parent]))
                 
             # Plot Hasil
-            max_state_value.append(max([s.state_value for s in selected_parent]))
-            avg_state_value.append(sum([s.state_value for s in selected_parent])/self.jml_parent)
+            max_stateValue.append(max([s.stateValue for s in selected_parent]))
+            avg_stateValue.append(sum([s.stateValue for s in selected_parent])/self.jml_parent)
             iterasi.append(iterasi[-1]+1)
 
             if found: break
@@ -145,36 +140,36 @@ class GeneticAlgorithm(LocalSearch):
                 'x_label': 'Iterasi',
                 'y_label': 'State Value',
                 'x_data': iterasi,
-                'y_data': max_state_value
+                'y_data': max_stateValue
             },
             'Average State Values': {
                 'x_label': 'Iterasi',
                 'y_label': 'State Value',
                 'x_data': iterasi,
-                'y_data': avg_state_value
+                'y_data': avg_stateValue
             }
         }
 
         stats = {
             'algorithm_name': 'Genetic Algorithm',
             'iterations': iterasi[-1],
-            'initial_state_value': state.state_value,
-            'final_state_value': best_state.state_value,
+            'initial_stateValue': max_stateValue[0],
+            'final_stateValue': best_state.stateValue,
             'execution_time': execution_time,
             'plot_graph': plotting_hasil
         }
-        print("========== Done ==========\n")
+        # print("========== Done ==========\n")
         return best_state, stats
     
     def _initialize_parent(self, *objectives) -> List[State]:
         """Inisialisasi Parent"""
         selected_parent:List[State] = []
-        print("\n[*] State Value Awal")
+        # print("\n[*] State Value Awal")
         for i in range(self.jml_parent):
             parent_state = self.state.copy()
-            parent_state.initialize_random_state(*objectives)
+            parent_state.initializeRandomSuccessor(*objectives)
             selected_parent.append(parent_state)
-            print(f"    parent {i}: {parent_state.state_value}")
+            # print(f"    parent {i}: {parent_state.stateValue}")
         return selected_parent
 
     def _crossover(self, stateA:State, stateB:State, *objectives:Callable) -> Tuple[State, State]:
@@ -184,8 +179,8 @@ class GeneticAlgorithm(LocalSearch):
         state_B = stateB.copy()
 
         # 1. Extract (matkul -> slots)
-        matkul_slots_A = state_A.mk_to_slots
-        matkul_slots_B = state_B.mk_to_slots
+        matkul_slots_A = state_A.MKtoSlots
+        matkul_slots_B = state_B.MKtoSlots
 
         # 2. Crossover
         random_crossable_selector = random.randint(0, 1)
@@ -193,26 +188,26 @@ class GeneticAlgorithm(LocalSearch):
             for i, crossable in enumerate(list_crossability):
                 if  ((random_crossable_selector==0 and crossable) or 
                      (random_crossable_selector==1 and not crossable)):
-                    state_A.swap_mk(
+                    state_A.swapMK(
                         matkul_slots_A[kode_matkul][i],
                         matkul_slots_B[kode_matkul][i]
                     )
-                    state_B.swap_mk(
+                    state_B.swapMK(
                         matkul_slots_A[kode_matkul][i],
                         matkul_slots_B[kode_matkul][i]
                     )
 
-        # 3. Update state_value
-        state_A.state_value = state_A.count_state_value(*objectives)
-        state_B.state_value = state_B.count_state_value(*objectives)
+        # 3. Update stateValue
+        state_A.stateValue = state_A.countStateValue(*objectives)
+        state_B.stateValue = state_B.countStateValue(*objectives)
 
         return state_A, state_B
     
 
     def _mutation(self, state:State, *objectives:Callable) -> State:
         """Melakukan Mutation"""
-        new_state = state.generate_random_successor(*objectives)
-        if new_state.state_value >= state.state_value:
+        new_state = state.generateRandomSuccessor(*objectives)
+        if new_state.stateValue >= state.stateValue:
             return new_state
         else:
             return state.copy()

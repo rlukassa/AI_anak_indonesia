@@ -1,11 +1,9 @@
-# Objective Cost
-
 from src.model.state import State
 
 def kasus_mahasiswa_bentrok(state: State) -> float:
     """Menghitung beban untuk matakuliah yang bentrok berdasarkan prioritas mahasiswa"""
     list_matkul_bentrok = [
-        list_matkul for _, list_matkul in state.times_to_mk.items() if len(list_matkul) > 1
+        list_matkul for _, list_matkul in state.timesToMK.items() if len(list_matkul) > 1
     ]
     beban_state = 0.0
     for matkul_bentrok in list_matkul_bentrok:
@@ -22,7 +20,7 @@ def kasus_mahasiswa_bentrok(state: State) -> float:
                     idx = mahasiswa.mata_kuliah.index(matkul.kode)
                     prioritas = mahasiswa.prioritas[idx]
                 except ValueError:
-                    prioritas = 4  # Default priority if not found
+                    prioritas = 4  # Default if not found
 
                 if prioritas == 1:
                     beban_state += 1.75
@@ -71,7 +69,7 @@ def kasus_dosen_gabisa(state:State) -> int:
 def kasus_dosen_bentrok(state: State) -> int:
     """Menghitung beban dosen yang matkulnya berbentrokan"""
     list_matkul_bentrok = [
-        list_matkul for _, list_matkul in state.times_to_mk.items() if len(list_matkul) > 1
+        list_matkul for _, list_matkul in state.timesToMK.items() if len(list_matkul) > 1
     ]
     beban_state = 0
     for matkul_bentrok in list_matkul_bentrok:

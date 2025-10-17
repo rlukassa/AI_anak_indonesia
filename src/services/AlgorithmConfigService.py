@@ -1,18 +1,12 @@
 from typing import Dict, Any
-import time
+from src.io.utils import Utils
 
 class AlgorithmConfigService:
-    """Service khusus untuk konfigurasi parameter algoritma (Single Responsibility)"""
-    # /// BUAT HC    
-    ## NAH DISINI CONFIG PARAMERTER NYA
-    # HC ATAU GA butuh parameter apa, ntar input usernya disini
-    # yang dicomment itu contoh
-    # nah implement dibawhanya
+
     @staticmethod
-    def configureHillClimbing() -> Dict[str, Any]: # config parameter HC
-        print("\n" + "="*50)
-        print("KONFIGURASI HILL CLIMBING")
-        print("="*50)
+    def configureHillClimbing() -> Dict[str, Any]: 
+        Utils.clear_screen()
+        Utils.showBox("KONFIGURASI HILL CLIMBING")
         
         print("Pilih variant Hill Climbing:")
         print("1. Steepest Ascent")
@@ -23,6 +17,7 @@ class AlgorithmConfigService:
         while True:
             variant_choice = input("Masukkan pilihan (1-4): ")
             if variant_choice in ["1", "2", "3", "4"]:
+                Utils.clear_screen()
                 break
         
         variant_map = {
@@ -51,24 +46,13 @@ class AlgorithmConfigService:
             max_restart = int(input("Maksimum restart: "))
             config['max_restart'] = max_restart
         
-        print(f"\nParameter Hill Climbing:")
-        print(f"   Variant: {variant}")
-        if variant == "sideways":
-            print(f"   Max Sideways: {max_sideways}")
-        if variant == "stochastic":
-            print(f"   Max Iteration: {max_iteration}")
-        if variant == "random_restart":
-            print(f"   Max Restarts: {max_restart}")
-        
         return config
     
     @staticmethod
-    # Simulated Annealing, inimah udah w
     def configureSimulatedAnnealing() -> Dict[str, Any]:
         """Konfigurasi parameter Simulated Annealing"""
-        print("\n" + "="*50)
-        print("KONFIGURASI SIMULATED ANNEALING")
-        print("="*50)
+        Utils.clear_screen()
+        Utils.showBox("KONFIGURASI SIMULATED ANNEALING")
         
         initial_temp = float(input("Initial Temperature (terakhir cek 1000.0): "))
         cooling_rate = float(input("Cooling Rate (terakhir cek 0.95): "))
@@ -79,6 +63,9 @@ class AlgorithmConfigService:
         print(f"   Cooling Rate: {cooling_rate}")
         print(f"   Stop Temperature: {stop_temp}")
         
+        Utils.clear_screen()
+        print("Searching for optimal solution...")
+        
         return {
             'initialTemp': initial_temp,
             'coolingRate': cooling_rate,
@@ -86,13 +73,10 @@ class AlgorithmConfigService:
         }
     
     @staticmethod
-    # buat GA
-    # sama kayak HC, config parameternya disini 
     def configureGeneticAlgorithm() -> Dict[str, Any]:
+        Utils.clear_screen()
         """Konfigurasi parameter Genetic Algorithm"""
-        print("\n" + "="*50)
-        print("KONFIGURASI GENETIC ALGORITHM")
-        print("="*50)
+        Utils.showBox("KONFIGURASI GENETIC ALGORITHM")
         
         while True:
             population_size =   int(input("Population Size (per iterasi): "))
@@ -109,10 +93,3 @@ class AlgorithmConfigService:
             'populationSize': population_size,
             'max_iteration': max_iteration
         }
-
-
-# NAH ntar kan return parameternya 
-# terus bakal bikin object dari parameter nya 
-# dan panggil <algoritma>.search() dari yang diimplment dari file algortima masing masing
-# cek di main.py
-#terus 
