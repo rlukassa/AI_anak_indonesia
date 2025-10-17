@@ -140,6 +140,7 @@ class State:
                 successors.append(s)
         return successors
 
+
     def generateRandomSuccessor(self, *objectives) -> "State":
         """Generate random single successor from current state."""
         successor = self.copy()
@@ -162,6 +163,7 @@ class State:
         successor.swapMK(slot1, slot2)
         successor.stateValue = successor.countStateValue(*objectives)
         return successor
+
 
     def initializeRandomSuccessor(self, *objectives: Callable):
         """Random successor initialization."""

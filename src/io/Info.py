@@ -41,12 +41,8 @@ class Info:
             inner_w = min(inner_w, 80)
 
             result += border(inner_w, "=")
-            result += center_line(" INFORMASI OPTIMASI ", inner_w)
-            result += border(inner_w, "=") + "\n"
-
-            result += border(inner_w, "-")
             result += center_line(" PARAMETER & HASIL ", inner_w)
-            result += border(inner_w, "-")
+            result += border(inner_w, "=")
 
             for k, v in self.infos.items():
                 k_s = str(k).ljust(maxKey)
@@ -60,16 +56,12 @@ class Info:
             lines = content.split("\n") if content else [""]
             max_line = max((len(l) for l in lines), default=0)
 
-            inner_w = max(40, len(" DETAIL INFORMASI "), len(title) + 2, max_line + 2)
+            inner_w = max(40, len(" ANALISIS JADWAL "), len(title) + 2, max_line + 2)
             inner_w = min(inner_w, 80)
 
             result += border(inner_w, "=")
-            result += center_line(" DETAIL INFORMASI ", inner_w)
-            result += border(inner_w, "=") + "\n"
-
-            result += border(inner_w, "-")
             result += center_line(f" {title} ", inner_w)
-            result += border(inner_w, "-")
+            result += border(inner_w, "=")
 
             for l in lines:
                 result += "|" + f" {l}".ljust(inner_w - 1) + "|\n"

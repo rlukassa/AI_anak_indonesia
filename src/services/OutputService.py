@@ -174,6 +174,10 @@ class OutputService:
         algorithmInfo = OutputService.generateAlgorithmInfo(algorithmName, parameters, executionStats)
         algorithmInfo.display()
         
+        # Generate dan display schedule analysis
+        scheduleAnalysis = OutputService.generateScheduleAnalysis(state)
+        scheduleAnalysis.display()
+        
         # Generate dan display initial state schedule tables (jadwal state awal)
         if initialState:
             print(f"\nJADWAL INITIAL STATE")
@@ -187,10 +191,6 @@ class OutputService:
             else:
                 print("Tidak ada jadwal awal yang dapat ditampilkan.")
                 print("Initial state mungkin kosong atau tidak ada assignment.")
-        
-        # Generate dan display schedule analysis
-        scheduleAnalysis = OutputService.generateScheduleAnalysis(state)
-        scheduleAnalysis.display()
         
         # Generate dan display final state tables (jadwal hasil optimasi)
         print(f"\nJADWAL HASIL OPTIMASI")
@@ -220,7 +220,6 @@ class OutputService:
                    executionStats: Dict[str, Any], filename: str, initialState: State = None) -> None:
         """Save hasil optimasi ke file dan save plot jika ada"""
         import os
-        from datetime import datetime
         
         # Buat folder results jika belum ada
         results_dir = "results"
