@@ -1,15 +1,13 @@
 ## Run with Docker
 
-### Linux / MacOS / WSL
+### Linux / MacOS / WSL / Windows
 ```bash
-make build # compile
-make stop  # stop running container
-make run   # run
+sudo -H python3 -m pip install --break-system-packages -r requirements.txt
+python3 run.py
 ```
 
 ### Windows
 ```shell
-./make build # compile
-./make stop  # stop running container
-./make run   # run
+pip install -r requirements.txt
+python run.py
 ```
