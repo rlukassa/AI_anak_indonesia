@@ -1,5 +1,6 @@
 from src.io.utils import Utils
 from settings.settings import validPath, validJSONFormat
+from src.services.OutputService import OutputService
 
 class UserInterfaceService:
 
@@ -18,12 +19,13 @@ class UserInterfaceService:
         valid_choices = {"HC", "SA", "GA"}
         while True:
             Utils.clear_screen()
+            OutputService.showWelcome()
             print("\nPilih Algoritma:")
-            print("1. Hill Climbing (HC)")
-            print("2. Simulated Annealing (SA)")
-            print("3. Genetic Algorithm (GA)")
+            print("   1. Hill Climbing (HC)")
+            print("   2. Simulated Annealing (SA)")
+            print("   3. Genetic Algorithm (GA)")
 
-            selected = input("Pilihan (HC/SA/GA): ").strip().upper()
+            selected = input("\nPilihan (HC/SA/GA): ").strip().upper()
             if selected in valid_choices:
                 return selected
 

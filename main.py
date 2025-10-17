@@ -43,12 +43,15 @@ def main():
         algorithmName = "Genetic Algorithm"
         
     Utils.clear_screen()
+    OutputService.showWelcome()  
     
     # Display optimized results
     OutputService.displayResults(finalState, algorithmName, config, algorithmStats, initialState)
     
     # Save file option
     if OutputConfigService.askSaveOption():
+        Utils.clear_screen()
+        OutputService.showWelcome()  
         filename = OutputConfigService.generateFilename(algorithmName)
         OutputService.saveResults(finalState, algorithmName, config, algorithmStats, filename, initialState)
 

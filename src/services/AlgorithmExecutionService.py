@@ -5,6 +5,7 @@ from src.io.utils import Utils
 from src.algorithms.hill_climbing import HillClimbing  
 from src.algorithms.genetic import GeneticAlgorithm
 from src.eval.evaluator import kasus_mahasiswa_bentrok, kasus_kapasitas_kurang, kasus_dosen_gabisa, kasus_dosen_bentrok
+from src.services.OutputService import OutputService
 
 class AlgorithmExecutionService:
     
@@ -13,6 +14,7 @@ class AlgorithmExecutionService:
         """Menjalankan algoritma Hill Climbing dengan konfigurasi yang diberikan"""
         
         Utils.clear_screen()
+        OutputService.showWelcome()
         print("Searching for optimal solution...")
         
         # Set objective function
@@ -42,6 +44,7 @@ class AlgorithmExecutionService:
         """Menjalankan algoritma Simulated Annealing dengan konfigurasi yang diberikan"""
         
         Utils.clear_screen()
+        OutputService.showWelcome()
         print("Searching for optimal solution...")
         
         # Set objective function
@@ -70,6 +73,7 @@ class AlgorithmExecutionService:
         """Menjalankan algoritma Genetic Algorithm dengan konfigurasi yang diberikan"""
         
         Utils.clear_screen()
+        OutputService.showWelcome()
         print("Searching for optimal solution...")
         
         # Set objective function
