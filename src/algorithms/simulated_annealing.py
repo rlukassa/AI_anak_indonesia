@@ -27,10 +27,6 @@ class SA(LocalSearch):
         all_probabilities = [1]
         iterasi = [iterations]
         
-        print(f"Memulai Simulated Annealing...")
-        print(f"   Initial Temperature: {self.initialT}")
-        print(f"   Initial State Value: {initial_stateValue:.2f}")
-        
         while currT > self.stopT:  # kalo masih di atas suhu berhenti
             successor = currState.generateRandomSuccessor(*objectives) # cari successor (random)
             _deltaE = successor.stateValue - currState.stateValue # hitung delta E = E_successor - E_curr 
@@ -55,17 +51,17 @@ class SA(LocalSearch):
             iterasi.append(iterations)
             
             # Progress indicator setiap 100 iterasi
-            if iterations % 100 == 0:
-                print(f"   Iterasi {iterations:,}, Temperature: {currT:.2f}, State Value: {currState.stateValue:.2f}")
+            # if iterations % 100 == 0:
+            #     print(f"   Iterasi {iterations:,}, Temperature: {currT:.2f}, State Value: {currState.stateValue:.2f}")
         
         end_time = time.time()
         execution_time = end_time - start_time
         
-        print(f"Simulated Annealing selesai!")
-        print(f"   Final Temperature: {currT:.4f}")
-        print(f"   Final State Value: {currState.stateValue:.2f}")
-        print(f"   Total Iterasi: {iterations:,}")
-        print(f"   Waktu Eksekusi: {execution_time:.3f} detik")
+        # print(f"Simulated Annealing selesai!")
+        # print(f"   Final Temperature: {currT:.4f}")
+        # print(f"   Final State Value: {currState.stateValue:.2f}")
+        # print(f"   Total Iterasi: {iterations:,}")
+        # print(f"   Waktu Eksekusi: {execution_time:.3f} detik")
         
         # Plotting Hasil
         plotting_hasil = {

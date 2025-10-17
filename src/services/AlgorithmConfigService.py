@@ -6,9 +6,7 @@ class AlgorithmConfigService:
     @staticmethod
     def configureHillClimbing() -> Dict[str, Any]: 
         Utils.clear_screen()
-        print("\n" + "="*50)
-        print("KONFIGURASI HILL CLIMBING")
-        print("="*50)
+        Utils.showBox("KONFIGURASI HILL CLIMBING")
         
         print("Pilih variant Hill Climbing:")
         print("1. Steepest Ascent")
@@ -48,18 +46,13 @@ class AlgorithmConfigService:
             max_restart = int(input("Maksimum restart: "))
             config['max_restart'] = max_restart
         
-        Utils.clear_screen()
-        print("Searching for optimal solution...")
-        
         return config
     
     @staticmethod
     def configureSimulatedAnnealing() -> Dict[str, Any]:
         """Konfigurasi parameter Simulated Annealing"""
         Utils.clear_screen()
-        print("\n" + "="*50)
-        print("KONFIGURASI SIMULATED ANNEALING")
-        print("="*50)
+        Utils.showBox("KONFIGURASI SIMULATED ANNEALING")
         
         initial_temp = float(input("Initial Temperature (terakhir cek 1000.0): "))
         cooling_rate = float(input("Cooling Rate (terakhir cek 0.95): "))
@@ -83,9 +76,7 @@ class AlgorithmConfigService:
     def configureGeneticAlgorithm() -> Dict[str, Any]:
         Utils.clear_screen()
         """Konfigurasi parameter Genetic Algorithm"""
-        print("\n" + "="*50)
-        print("KONFIGURASI GENETIC ALGORITHM")
-        print("="*50)
+        Utils.showBox("KONFIGURASI GENETIC ALGORITHM")
         
         while True:
             population_size =   int(input("Population Size (per iterasi): "))

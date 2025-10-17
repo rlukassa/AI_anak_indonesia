@@ -11,11 +11,11 @@ class State:
         Waktu(hari, jam) for hari in ["Senin", "Selasa", "Rabu", "Kamis", "Jumat"] for jam in range(7, 18)
     }
     
-
+    
     def __init__(self):
         # Object Domain
-        self.repo              : Repository                # Must be initialize
-        self.availableSlots   : Set[Tuple[str, Waktu]]    # Must be initialize
+        self.repo : Repository
+        self.availableSlots : Set[Tuple[str, Waktu]]
         
         # Attribute
         self.assignments: Dict[Tuple[str, Waktu], MataKuliah] = {}
@@ -29,6 +29,7 @@ class State:
 
 
     def initializeDomain(self, repo: Repository, _withDosen:bool=True):
+        """Domain Initialization."""
         self.repo = repo
         availableTime:Set[Waktu] = {}
         if _withDosen:
@@ -52,8 +53,8 @@ class State:
             raise ValueError("DOMAIN ERROR! slot dosen tidak cukup")
 
 
-    # Ubah method copy() seperti di bawah ini:
-    def copy(self) -> "State": # Mengembalikan salinan mendalam dari state 
+    def copy(self) -> "State":
+        """State Deep Copy."""
         new_state = State()
         new_state.repo = self.repo
         new_state.availableSlots = self.availableSlots
@@ -65,6 +66,7 @@ class State:
 
 
     def assignMK(self, kode_mk: str, kode_ruangan: str, waktu: Waktu):
+        """Assign matakuliah -> kode ruangan & waktu."""
         slot = (kode_ruangan, waktu)
         
         if slot in self.assignments:
@@ -79,11 +81,10 @@ class State:
         if matkul.kode not in self.MKtoSlots:
             self.MKtoSlots[matkul.kode] = list()
         State.autoSortedAppend(self.MKtoSlots[matkul.kode], slot, list(self.repo.ruangan.keys()))
-        # self.MKtoSlots[matkul.kode].append(slot)
-        
+    
     
     def removeMK(self, kode_ruangan: str, waktu: Waktu) -> Optional[MataKuliah]:
-        # hapus matkul
+        """Remove mata kuliah"""
         slot = (kode_ruangan, waktu)
         if slot not in self.assignments:
             return None
@@ -103,8 +104,7 @@ class State:
     
 
     def swapMK(self, slot1: Tuple[str, Waktu], slot2: Tuple[str, Waktu]):
-        # tuker 2 matkul dari 2 slot
-        # kalo salah satu slot kosong, anggap aja assign ke slot itu 
+        """Swap mata kuliah"""
         kode_ruangan1, waktu1 = slot1
         kode_ruangan2, waktu2 = slot2
 
@@ -118,7 +118,7 @@ class State:
 
 
     def countStateValue(self, *objectives: Callable) -> float:
-        # hitung state value, ini nilainya ---- ... 0
+        """State value calculation."""
         stateValue = 0
         for func in objectives:
             stateValue -= func(self)
@@ -126,6 +126,7 @@ class State:
 
 
     def generateAllSuccessors(self, *objectives) -> list["State"]:
+        """Generate all successors from the current state."""
         successors = []
         for slot1 in list(self.assignments.keys()):
             for slot2 in self.availableSlots:
@@ -140,6 +141,7 @@ class State:
         return successors
 
     def generateRandomSuccessor(self, *objectives) -> "State":
+        """Generate random single successor from current state."""
         successor = self.copy()
         if not successor.assignments:
             return successor
@@ -162,6 +164,7 @@ class State:
         return successor
 
     def initializeRandomSuccessor(self, *objectives: Callable):
+        """Random successor initialization."""
         # Hapus segala yang ada
         self.assignments = {}
         self.timesToMK = {}

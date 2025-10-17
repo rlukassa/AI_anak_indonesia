@@ -158,18 +158,18 @@ class GeneticAlgorithm(LocalSearch):
             'execution_time': execution_time,
             'plot_graph': plotting_hasil
         }
-        print("========== Done ==========\n")
+        # print("========== Done ==========\n")
         return best_state, stats
     
     def _initialize_parent(self, *objectives) -> List[State]:
         """Inisialisasi Parent"""
         selected_parent:List[State] = []
-        print("\n[*] State Value Awal")
+        # print("\n[*] State Value Awal")
         for i in range(self.jml_parent):
             parent_state = self.state.copy()
             parent_state.initializeRandomSuccessor(*objectives)
             selected_parent.append(parent_state)
-            print(f"    parent {i}: {parent_state.stateValue}")
+            # print(f"    parent {i}: {parent_state.stateValue}")
         return selected_parent
 
     def _crossover(self, stateA:State, stateB:State, *objectives:Callable) -> Tuple[State, State]:

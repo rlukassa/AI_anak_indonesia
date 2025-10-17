@@ -1,6 +1,6 @@
-from os import system, name
 import src.io.repo_loader as Repository
 from src.model.state import State
+from src.io.utils import Utils
 from src.services.OutputService import OutputService
 from src.services.UserInterfaceService import UserInterfaceService
 from src.services.AlgorithmConfigService import AlgorithmConfigService
@@ -13,60 +13,43 @@ from src.eval.evaluator import (
     kasus_dosen_bentrok
 )
 
-
-def main():  # fungsi utama program sebagai driver
-    if name == 'nt':
-        _ = system('cls')
-    else:
-        _ = system('clear')
+def main():
+    Utils.clear_screen()
     OutputService.showWelcome()  
     filePath = UserInterfaceService.getValidFilePath()
-    repository = Repository.create_repo(filePath) # yang ubah ke object itu
-    selectedAlgorithm = UserInterfaceService.selectAlgorithm()  # service untuk pilih algoritma
-    initialState = State()  # buat state kosong
-    initialState.initializeDomain(repository)  # inisialisasi dengan data repository
+    repository = Repository.create_repo(filePath)
+    selectedAlgorithm = UserInterfaceService.selectAlgorithm()
+    initialState = State()
+    initialState.initializeDomain(repository)
     objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang, kasus_dosen_gabisa, kasus_dosen_bentrok)
-    initialState.initializeRandomSuccessor(*objectiveFunctions)  # buat assignment awal
+    initialState.initializeRandomSuccessor(*objectiveFunctions)
 
-    # // Buat HC
-    if selectedAlgorithm == "HC":  # pilih Hill Climbing
-        config = AlgorithmConfigService.configureHillClimbing()  # service konfigurasi HC
-
-        # driver algo
-        finalState, algorithmStats = AlgorithmExecutionService.runHillClimbing(initialState, config)  # eksekusi HC
-        algorithmName = f"Hill Climbing"  # nama dengan variant kek HC Random Restart 
+    # Hill Climbing
+    if selectedAlgorithm == "HC":
+        config = AlgorithmConfigService.configureHillClimbing()
+        finalState, algorithmStats = AlgorithmExecutionService.runHillClimbing(initialState, config)
+        algorithmName = f"Hill Climbing"
     
-    # // BUAT SA
-    elif selectedAlgorithm == "SA":  # jika pilih Simulated Annealing
-        config = AlgorithmConfigService.configureSimulatedAnnealing()  # service konfigurasi SA
-        finalState, algorithmStats = AlgorithmExecutionService.runSimulatedAnnealing(initialState, config)  # eksekusi SA
-        algorithmName = "Simulated Annealing"  # nama algoritma
+    # Simmulated Annealing
+    elif selectedAlgorithm == "SA":
+        config = AlgorithmConfigService.configureSimulatedAnnealing()
+        finalState, algorithmStats = AlgorithmExecutionService.runSimulatedAnnealing(initialState, config)
+        algorithmName = "Simulated Annealing"
         
-    # // BUAT GA
-    elif selectedAlgorithm == "GA":  # jika pilih Genetic Algorithm
-        config = AlgorithmConfigService.configureGeneticAlgorithm()  # service konfigurasi GA
+    # Genetic Algorithm
+    elif selectedAlgorithm == "GA":
+        config = AlgorithmConfigService.configureGeneticAlgorithm()
+        finalState, algorithmStats = AlgorithmExecutionService.runGeneticAlgorithm(initialState, config)
+        algorithmName = "Genetic Algorithm"
         
-        finalState, algorithmStats = AlgorithmExecutionService.runGeneticAlgorithm(initialState, config)  # eksekusi GA
-        algorithmName = "Genetic Algorithm"  # nama algoritma
-
-    # nah finalState dan algorithmStats itu hasil dari algoritma nya 
-    # terus keluarain display Resultsnya (6.) 7.
-    # tapi ini yang dibawah biarin aja
-    # jadi fokuske 4. dan 5. 
-    # dah itu
-    # harusnya udah keluar tabelnya kalo bener 
-
+    Utils.clear_screen()
     
+    # Display optimized results
+    OutputService.displayResults(finalState, algorithmName, config, algorithmStats, initialState)
     
-    # HEADER OUTPUT    
-    OutputService.showResultHeader()  # tampilkan header hasil yang HASIL OPTIMASI
-    
-    # display semua hasil optimasi
-    OutputService.displayResults(finalState, algorithmName, config, algorithmStats, initialState)  # display lengkap dari informasi optimasi sampe tabel dan info
-    
-    if OutputConfigService.askSaveOption():  # tanya save option
-        filename = OutputConfigService.generateFilename(algorithmName)  # generate nama file
-        # Implementasi save yang sebenarnya
+    # Save file option
+    if OutputConfigService.askSaveOption():
+        filename = OutputConfigService.generateFilename(algorithmName)
         OutputService.saveResults(finalState, algorithmName, config, algorithmStats, filename, initialState)
 
 

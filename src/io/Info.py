@@ -1,75 +1,79 @@
 from typing import Dict, Any, List
 
-class Info:    
+class Info:
     def __init__(self):
+        """Initialize storage for infos and sections."""
         self.infos: Dict[str, Any] = {}
         self.sections: List[tuple] = []
-    
+
     def addInfo(self, key: str, value: Any) -> None:
-        self.infos[key] = value # tambah info , pake dict
-         # contoh : self.infos["Akurasi"] = 95.5
-    
+        """Add a key-value information entry."""
+        self.infos[key] = value
+
     def addSection(self, title: str, content: str) -> None:
-        self.sections.append((title, content)) # tambah section, pake list of tuple
-        # contoh : self.sections.append(("Analisis Jadwal", "Total Mata Kuliah: 50\nTotal Ruangan: 10"))
-    
+        """Add a titled section with multiline content."""
+        self.sections.append((title, content))
+
     def display(self) -> None:
+        """Print the rendered output to console."""
         print(self.render())
-    
+
     def render(self) -> str:
+        """Build and return the formatted ASCII report string."""
         if not self.infos and not self.sections:
             return ""
-        
-        result = ""
-        
-        # Render info key-value jika ada
-        if self.infos:
-            # Hitung lebar kotak berdasarkan content
-            maxKeyLength = max(len(str(key)) for key in self.infos.keys()) if self.infos else 0
-            maxValueLength = max(len(str(value)) for value in self.infos.values()) if self.infos else 0
-            totalWidth = maxKeyLength + maxValueLength + 7  # " : " + padding
-            totalWidth = min(max(totalWidth, 40), 80)  # Min 40, max 80 chars
-            
-            # Header box dengan karakter ASCII
-            result += "+" + "=" * totalWidth + "+\n"
-            result += "|" + " INFORMASI OPTIMASI ".center(totalWidth) + "|\n"
-            result += "+" + "=" * totalWidth + "+\n\n"
 
-            
-            
-            # Content box dengan karakter ASCII
-            result += "+" + "-" * totalWidth + "+\n"
-            result += "|" + " PARAMETER & HASIL ".center(totalWidth) + "|\n"
-            result += "+" + "-" * totalWidth + "+\n"
-            
-            for key, value in self.infos.items():
-                keyStr = str(key)[:maxKeyLength].ljust(maxKeyLength)
-                valueStr = str(value)[:maxValueLength].rjust(maxValueLength)
-                result += f"|  {keyStr} : {valueStr}  |\n"
-            
-            result += "+" + "-" * totalWidth + "+\n\n"
-        
-        # Render sections jika ada
+        def border(w: int, ch: str) -> str:
+            """Return a border line of given width using character."""
+            return "+" + ch * w + "+\n"
+
+        def center_line(text: str, w: int) -> str:
+            """Return a centered text line within borders."""
+            return "|" + text.center(w) + "|\n"
+
+        result = ""
+
+        if self.infos:
+            maxKey = max((len(str(k)) for k in self.infos), default=0)
+            maxVal = max((len(str(v)) for v in self.infos), default=0)
+
+            inner_w = max(maxKey + 3 + maxVal + 2, 40)
+            inner_w = min(inner_w, 80)
+
+            result += border(inner_w, "=")
+            result += center_line(" INFORMASI OPTIMASI ", inner_w)
+            result += border(inner_w, "=") + "\n"
+
+            result += border(inner_w, "-")
+            result += center_line(" PARAMETER & HASIL ", inner_w)
+            result += border(inner_w, "-")
+
+            for k, v in self.infos.items():
+                k_s = str(k).ljust(maxKey)
+                v_s = str(v).rjust(maxVal)
+                line = f"| {k_s} : {v_s} |"
+                result += line + "\n"
+
+            result += border(inner_w, "-") + "\n"
+
         for title, content in self.sections:
-            lines = content.split('\n')
-            maxContentLength = max(len(line) for line in lines) if lines else 0
-            boxWidth = max(40, len(title) + 4, maxContentLength + 4)
-            boxWidth = min(boxWidth, 80)
-            
-            # Header dengan karakter ASCII
-            result += "+" + "=" * boxWidth + "+\n"
-            result += "|" + " DETAIL INFORMASI ".center(boxWidth) + "|\n"
-            result += "+" + "=" * boxWidth + "+\n\n"
-            
-            # Content dengan karakter ASCII
-            result += "+" + "-" * boxWidth + "+\n"
-            result += "|" + f" {title} ".center(boxWidth) + "|\n"
-            result += "+" + "-" * boxWidth + "+\n"
-            
-            for line in lines:
-                paddedLine = f" {line} ".ljust(boxWidth)
-                result += f"|{paddedLine}|\n"
-            
-            result += "+" + "-" * boxWidth + "+\n\n"
-        
+            lines = content.split("\n") if content else [""]
+            max_line = max((len(l) for l in lines), default=0)
+
+            inner_w = max(40, len(" DETAIL INFORMASI "), len(title) + 2, max_line + 2)
+            inner_w = min(inner_w, 80)
+
+            result += border(inner_w, "=")
+            result += center_line(" DETAIL INFORMASI ", inner_w)
+            result += border(inner_w, "=") + "\n"
+
+            result += border(inner_w, "-")
+            result += center_line(f" {title} ", inner_w)
+            result += border(inner_w, "-")
+
+            for l in lines:
+                result += "|" + f" {l}".ljust(inner_w - 1) + "|\n"
+
+            result += border(inner_w, "-") + "\n"
+
         return result
