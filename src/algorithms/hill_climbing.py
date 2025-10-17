@@ -5,7 +5,6 @@ from src.model.state import State
 import random
 import time
 
-@dataclass
 class HillClimbing(LocalSearch):
 
     def __init__(self, v:str, ms:int, mi:int, mr:int):
@@ -166,19 +165,10 @@ class HillClimbing(LocalSearch):
 
         steps = 0
         while steps < iterations:
-            # # Ini Logikanya salah, gw koreksi dikit ye
-            # successors = current.generateAllSuccessors(*objectives)
-            # if not successors:
-            #     break
-            
-            # better = [s for s in successors if s.stateValue > current.stateValue]
-            # if not better:
-            #     break
-            
-            # # random dari better states
-            # current = random.choice(better)
-
+            # generate successors
             successor = current.generateRandomSuccessor(*objectives)
+            
+            # if bigger accept
             better =  successor.stateValue > current.stateValue
             if better:
                 current = successor

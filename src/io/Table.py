@@ -1,7 +1,7 @@
 from typing import List, Any
 
 class Table:    
-    def __init__(self): # constructor
+    def __init__(self):
         self.headers: List[str] = []
         self.rows: List[List[Any]] = []
     

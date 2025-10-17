@@ -220,11 +220,6 @@ class OutputService:
         print("="*80)
     
     @staticmethod
-    def showOptimizationStart() -> None:
-        """Tampilkan pesan mulai optimasi"""
-        print("\nMemulai optimasi penjadwalan...")
-    
-    @staticmethod
     def showResultHeader() -> None:
         """Tampilkan header hasil optimasi"""
         print("\n" + "="*80)

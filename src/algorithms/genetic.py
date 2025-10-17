@@ -1,11 +1,8 @@
-# Genetic Algorithm
 from typing import Dict, List, Callable, Set, Tuple, Any
 from src.eval.evaluator import *
 from src.model.entities import *
 from src.model.state import State
 from src.algorithms.local_search import LocalSearch
-from src.algorithms.hill_climbing import HillClimbing
-from src.algorithms.simulated_annealing import SA
 import random
 import time
 

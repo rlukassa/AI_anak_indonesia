@@ -1,4 +1,3 @@
-# class state
 from typing import Dict, Tuple, Set, List, Optional, Callable
 from src.io.repo_loader import Repository
 from src.model.entities import *

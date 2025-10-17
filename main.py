@@ -1,17 +1,18 @@
 from os import system, name
-import src.io.repo_loader as Repository  # import modul repository loader
-from src.model.state import State  # import class state untuk jadwal
-from src.services.OutputService import OutputService  # import unified output service
-from src.services.UserInterfaceService import UserInterfaceService  # import UI service
-from src.services.AlgorithmConfigService import AlgorithmConfigService  # import algorithm config service
-from src.services.OutputConfigService import OutputConfigService  # import output config service
-from src.services.AlgorithmExecutionService import AlgorithmExecutionService  # import algorithm executor
-from src.eval.evaluator import (  # import objective functions
-    kasus_mahasiswa_bentrok, 
-    kasus_kapasitas_kurang, 
-    kasus_dosen_gabisa, 
+import src.io.repo_loader as Repository
+from src.model.state import State
+from src.services.OutputService import OutputService
+from src.services.UserInterfaceService import UserInterfaceService
+from src.services.AlgorithmConfigService import AlgorithmConfigService
+from src.services.OutputConfigService import OutputConfigService
+from src.services.AlgorithmExecutionService import AlgorithmExecutionService
+from src.eval.evaluator import (
+    kasus_mahasiswa_bentrok,
+    kasus_kapasitas_kurang,
+    kasus_dosen_gabisa,
     kasus_dosen_bentrok
 )
+
 
 def main():  # fungsi utama program sebagai driver
     if name == 'nt':
@@ -26,13 +27,12 @@ def main():  # fungsi utama program sebagai driver
     initialState.initializeDomain(repository)  # inisialisasi dengan data repository
     objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang, kasus_dosen_gabisa, kasus_dosen_bentrok)
     initialState.initializeRandomSuccessor(*objectiveFunctions)  # buat assignment awal
-    OutputService.showOptimizationStart()  # pesan mulai 
 
     # // Buat HC
     if selectedAlgorithm == "HC":  # pilih Hill Climbing
         config = AlgorithmConfigService.configureHillClimbing()  # service konfigurasi HC
 
-        # driver algo       
+        # driver algo
         finalState, algorithmStats = AlgorithmExecutionService.runHillClimbing(initialState, config)  # eksekusi HC
         algorithmName = f"Hill Climbing"  # nama dengan variant kek HC Random Restart 
     

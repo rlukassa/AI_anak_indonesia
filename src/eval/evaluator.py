@@ -1,5 +1,3 @@
-# Objective Cost
-
 from src.model.state import State
 
 def kasus_mahasiswa_bentrok(state: State) -> float:
@@ -22,7 +20,7 @@ def kasus_mahasiswa_bentrok(state: State) -> float:
                     idx = mahasiswa.mata_kuliah.index(matkul.kode)
                     prioritas = mahasiswa.prioritas[idx]
                 except ValueError:
-                    prioritas = 4  # Default priority if not found
+                    prioritas = 4  # Default if not found
 
                 if prioritas == 1:
                     beban_state += 1.75
