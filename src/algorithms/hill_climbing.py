@@ -165,6 +165,10 @@ class HillClimbing(LocalSearch):
 
         steps = 0
         while steps < iterations:
+            # if state value global max -> return
+            if current.stateValue == 0:
+                break
+            
             # generate successors
             successor = current.generateRandomSuccessor(*objectives)
             

@@ -63,3 +63,13 @@ class Utils:
             print(center_line(s))
         print(empty())
         print(f"{C_BORDER}{bl}{h * (w - 2)}{br}{C_RESET}")
+        
+    def askYesNo(prompt: str) -> bool:
+        """Prompt user with yes/no question and return True for yes, False for no."""
+        while True:
+            answer = input(prompt).strip().lower()
+            if answer in ("y", "yes"):
+                return True
+            if answer in ("n", "no"):
+                return False
+            print("Invalid input, please enter 'y' or 'n'.")

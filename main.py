@@ -14,45 +14,49 @@ from src.eval.evaluator import (
 )
 
 def main():
-    Utils.clear_screen()
-    OutputService.showWelcome()  
-    filePath = UserInterfaceService.getValidFilePath()
-    repository = Repository.create_repo(filePath)
-    selectedAlgorithm = UserInterfaceService.selectAlgorithm()
-    initialState = State()
-    initialState.initializeDomain(repository)
-    objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang, kasus_dosen_gabisa, kasus_dosen_bentrok)
-    initialState.initializeRandomSuccessor(*objectiveFunctions)
-
-    # Hill Climbing
-    if selectedAlgorithm == "HC":
-        config = AlgorithmConfigService.configureHillClimbing()
-        finalState, algorithmStats = AlgorithmExecutionService.runHillClimbing(initialState, config)
-        algorithmName = f"Hill Climbing"
-    
-    # Simmulated Annealing
-    elif selectedAlgorithm == "SA":
-        config = AlgorithmConfigService.configureSimulatedAnnealing()
-        finalState, algorithmStats = AlgorithmExecutionService.runSimulatedAnnealing(initialState, config)
-        algorithmName = "Simulated Annealing"
-        
-    # Genetic Algorithm
-    elif selectedAlgorithm == "GA":
-        config = AlgorithmConfigService.configureGeneticAlgorithm()
-        finalState, algorithmStats = AlgorithmExecutionService.runGeneticAlgorithm(initialState, config)
-        algorithmName = "Genetic Algorithm"
-        
-    Utils.clear_screen()
-    OutputService.showWelcome()  
-    
-    # Display optimized results
-    OutputService.displayResults(finalState, algorithmName, config, algorithmStats, initialState)
-    
-    # Save file option
-    if OutputConfigService.askSaveOption():
+    while True:
         Utils.clear_screen()
         OutputService.showWelcome()  
-        filename = OutputConfigService.generateFilename(algorithmName)
-        OutputService.saveResults(finalState, algorithmName, config, algorithmStats, filename, initialState)
+        filePath = UserInterfaceService.getValidFilePath()
+        repository = Repository.create_repo(filePath)
+        selectedAlgorithm = UserInterfaceService.selectAlgorithm()
+        initialState = State()
+        initialState.initializeDomain(repository)
+        objectiveFunctions = (kasus_mahasiswa_bentrok, kasus_kapasitas_kurang, kasus_dosen_gabisa, kasus_dosen_bentrok)
+        initialState.initializeRandomSuccessor(*objectiveFunctions)
+        
+        # Hill Climbing
+        if selectedAlgorithm == "HC":
+            config = AlgorithmConfigService.configureHillClimbing()
+            finalState, algorithmStats = AlgorithmExecutionService.runHillClimbing(initialState, config)
+            algorithmName = f"Hill Climbing"
+            
+        # Simmulated Annealing
+        elif selectedAlgorithm == "SA":
+            config = AlgorithmConfigService.configureSimulatedAnnealing()
+            finalState, algorithmStats = AlgorithmExecutionService.runSimulatedAnnealing(initialState, config)
+            algorithmName = "Simulated Annealing"
+            
+        # Genetic Algorithm
+        elif selectedAlgorithm == "GA":
+            config = AlgorithmConfigService.configureGeneticAlgorithm()
+            finalState, algorithmStats = AlgorithmExecutionService.runGeneticAlgorithm(initialState, config)
+            algorithmName = "Genetic Algorithm"
+        
+        Utils.clear_screen()
+        OutputService.showWelcome()  
+        
+        # Display optimized results
+        OutputService.displayResults(finalState, algorithmName, config, algorithmStats, initialState)
+        
+        # Save file option
+        if OutputConfigService.askSaveOption():
+            Utils.clear_screen()
+            OutputService.showWelcome()  
+            filename = OutputConfigService.generateFilename(algorithmName)
+            OutputService.saveResults(finalState, algorithmName, config, algorithmStats, filename, initialState)
+        
+        # Again?
+        Utils.askYesNo()
 
 
