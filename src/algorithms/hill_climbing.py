@@ -287,7 +287,7 @@ class HillClimbing(LocalSearch):
         stats = {
             'initial_stateValue': initial_stateValue,
             'final_stateValue': best.stateValue,
-            'restarts': restart[-1],
+            'restarts': len(restart),
             'iter_restart': res_iter,
             'plot_graph': plotting_hasil
         }

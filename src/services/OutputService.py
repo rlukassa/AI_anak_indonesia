@@ -50,8 +50,8 @@ class OutputService:
 
         if 'restarts' in executionStats and 'iter_restart' in executionStats:
             info.addInfo("Jumlah Restart", f"{executionStats['restarts']}")
-            for i in range(executionStats['restarts']):
-                info.addInfo(f"Iterasi Restart ke-{i}", f"{executionStats['iter_restart'][i]}")
+            for i, it in enumerate(executionStats['iter_restart']):
+                info.addInfo(f"Iterasi Restart ke-{i-1}", f"{it}")
 
         if 'stuck_freq' in executionStats:
             info.addInfo("Stuck Frequency", f"{executionStats['stuck_freq']}")
