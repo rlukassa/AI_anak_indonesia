@@ -57,6 +57,7 @@ def main():
             OutputService.saveResults(finalState, algorithmName, config, algorithmStats, filename, initialState)
         
         # Again?
-        Utils.askYesNo("Again? (Y/N) : ")
+        if not Utils.askYesNo("Again? (Y/N) : "): 
+            break
 
 

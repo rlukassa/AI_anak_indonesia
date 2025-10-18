@@ -20,7 +20,7 @@ class UserInterfaceService:
         while True:
             Utils.clear_screen()
             OutputService.showWelcome()
-            print("\nPilih Algoritma:")
+            print("Pilih Algoritma:")
             print("   1. Hill Climbing (HC)")
             print("   2. Simulated Annealing (SA)")
             print("   3. Genetic Algorithm (GA)")

@@ -214,7 +214,7 @@ class HillClimbing(LocalSearch):
         initial_stateValue = 0
 
         found = False
-        for i in range (restarts):
+        for i in range (restarts+1):
 
             if found:
                 break
