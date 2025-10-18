@@ -54,9 +54,9 @@ class AlgorithmConfigService:
         Utils.clear_screen()
         Utils.showBox("KONFIGURASI SIMULATED ANNEALING")
         
-        initial_temp = float(input("Initial Temperature (terakhir cek 1000.0): "))
-        cooling_rate = float(input("Cooling Rate (terakhir cek 0.95): "))
-        stop_temp = float(input("Stop Temperature (terakhir cek 0.1): "))
+        initial_temp = float(input("Initial Temperature : "))
+        cooling_rate = float(input("Cooling Rate : "))
+        stop_temp = float(input("Stop Temperature : "))
         
         print(f"\nParameter Simulated Annealing:")
         print(f"   Initial Temperature: {initial_temp}")
