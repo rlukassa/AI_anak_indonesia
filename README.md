@@ -1,3 +1,7 @@
+<div align="center">
+   <img width=100% src="https://capsule-render.vercel.app/api?type=waving&height=300&color=0:282C34,25:181921,75:313642,100:282C34&text=AI_anak_indonesia&fontColor=F7DC6F" />
+</div>
+
 # Tugas Besar 1 IF3170 Inteligensi Buatan: Pencarian Solusi Penjadwalan Kelas Mingguan Dengan Local Search 
 
 ## Deskripsi
@@ -297,8 +301,6 @@ Semua file tersimpan di folder 'results/' dengan prefix: hasil_simulated_anneali
 
 ---
 
-<p align="center">
-  <b>Program Studi Teknik Informatika</b><br>
-  <b>Institut Teknologi Bandung</b><br>
-  2025
-</p>
+<div align="center">
+   <img width=100% src="https://capsule-render.vercel.app/api?type=waving&height=120&color=0:282C34,25:181921,75:313642,100:1e3a8a&section=footer" />
+</div>
